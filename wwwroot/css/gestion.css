@@ -1,0 +1,56 @@
+﻿.card {
+    background-color:transparent ;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.7em;
+    border-radius: 1rem;
+}
+
+.btn {
+    border-radius: 0.6rem;
+}
+
+.search-container {
+    gap: 1rem;
+}
+
+input.form-control {
+    border-radius: 0.6rem;
+}
+
+
+
+
+.table td, .table th {
+        vertical-align: middle;
+        text-align: center; /* <-- centre le texte */
+ }
+
+
+.table-wrapper {
+    height: 450px; /* ou la hauteur que tu veux */
+    overflow-y: auto;
+    position: relative;
+}
+
+    /* Fixer l'en-tête du tableau */
+    .table-wrapper thead th {
+        position: sticky;
+        top: 0;
+        background-color: #fceaea; /* même couleur que ta card/table */
+        z-index: 5;
+        box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* petite ombre légère */
+        padding: 10px;
+    }
+
+    /* Pour éviter un effet moche de bordures */
+    .table-wrapper table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }

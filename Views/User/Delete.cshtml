@@ -1,0 +1,47 @@
+﻿@using Dashboard.ViewModels
+@model UserViewModel
+
+
+@{
+    ViewData["Title"] = "Delete User";
+    <link rel="stylesheet" href="~/css/gestion.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+}
+
+
+    <!-- Card de confirmation de suppression -->
+    <div class="card p-4 shadow-sm">
+
+       
+    <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-danger"> Confirm Deletion!</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+
+                <strong>Warning!</strong> The user will be permanently deleted.
+            </div>
+
+            <p>Are you sure you want to delete the following user?</p>
+
+            <!-- Informations sur l'utilisateur -->
+            <ul class="list-group mb-3">
+                <li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
+                <li class="list-group-item"><strong>UserName:</strong> @Model.UserName</li>
+            </ul>
+
+            <!-- Formulaire de confirmation de suppression -->
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" name="userId" value="@Model.UserId" />
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Users" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+

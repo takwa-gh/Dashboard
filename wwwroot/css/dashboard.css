@@ -1,0 +1,80 @@
+﻿body {
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+    background-color: white; /* Remplacement de var(--bg-color) */
+    margin: 0;
+    padding: 0;
+    color: #333; /* Remplacement de var(--text-color) */
+    line-height: 1.6;
+}
+
+.sidebar {
+    position: fixed; /* Correction: remplace 'center' */
+    top: 0;
+    left: 0;
+    height: 80%;
+    width: 120px;
+   
+    padding-top: 340px;
+    z-index: 1000;
+    /* Suppression de display:flex inutile ici */
+}
+
+    .sidebar a {
+        color: black; /* Couleur plus claire que blanc pur */
+        padding:20px;
+        display: block;
+        text-decoration: none;
+        position: center;
+    }
+
+.main-content {
+    margin-left: 250px;
+    margin-top: 190px;
+    padding: 10px; /* Ajout pour éviter le collage du contenu */
+}
+
+.topbar {
+    position: fixed;
+    top: 0px;
+    left: 250px;
+    right: 0px;
+    margin: 0 auto;
+    width: calc(100% - 250px - 160px);
+    text-align: center;
+    z-index: 999;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ajout d'une ombre */
+}
+
+.dropdown-menu {
+    right: auto;
+    left:0;
+}
+
+.logo-container {
+    position: fixed;
+    text-align:center;
+    top: 10px;
+    left: 20px;
+    z-index: 1001;
+    width: 120px;
+    height: auto;
+}
+
+    .logo-container img {
+        max-height: 30px;
+        width: auto;
+        display: block;
+    }
+
+.canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+.row > div {
+    padding: 10px;
+}
+
+

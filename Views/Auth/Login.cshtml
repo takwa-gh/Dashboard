@@ -1,0 +1,43 @@
+﻿@using Dashboard.ViewModels
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_AuthLayout";
+    <link rel="stylesheet" href="~/css/auth.css" />
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-form">
+            <form asp-action="Login" method="post">
+                
+                <div class="form-group">
+                    <input asp-for="Email" class="form-control" placeholder="Email">
+                    <span class="fas fa-envelope"></span>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+                <div class="form-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                    <span class="fas fa-lock"></span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <button type="submit" class="btn btn-red">Login</button>
+                <p class="mt-3 mb-1">
+                    <a asp-controller="Auth" asp-action="SignUp" class="log-link">Don't have an account ? SignUp</a>
+                </p>
+            </form>
+
+
+        </div>
+    </div>
+</body>
+</html>

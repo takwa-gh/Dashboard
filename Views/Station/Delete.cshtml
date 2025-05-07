@@ -1,0 +1,39 @@
+﻿@model Dashboard.Models.Station
+
+@{
+    ViewData["Title"] = "Delete Station";
+    <link rel="stylesheet" href="~/css/gestion.css" />
+}
+
+
+<div class="card p-4 shadow-sm ">
+    <div class="alert alert-danger">
+         <h3>Confirm deletion .</h3>
+    </div>
+
+    <h4>@Model.StationName</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Station ID</dt>
+        <dd class="col-sm-10">@Model.StationId</dd>
+
+        <dt class="col-sm-2">Station Name</dt>
+        <dd class="col-sm-10">@Model.StationName</dd>
+
+        <dt class="col-sm-2">Part Number</dt>
+        <dd class="col-sm-10">@Model.PartNumber</dd>
+    </dl>
+    <form asp-action="DeleteConfirmed" asp-controller="Station" method="post" class="d-inline">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="StationId" name="id"/>
+
+        <button type="submit" class="btn btn-danger me-2">
+            <i class="fas fa-trash"></i> Delete
+        </button>
+
+        <a asp-action="Stations" asp-controller="Station" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Cancel
+        </a>
+    </form>
+</div>
+
+ 

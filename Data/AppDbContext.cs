@@ -1,0 +1,18 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Dashboard.Models;
+
+namespace Dashboard.Data
+{
+    public class AppDbContext : DbContext
+    {
+        //Constructor
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+        //DbSet for Users
+        public DbSet<User> Users { get; set; }
+        //DbSet for Stations
+        public DbSet<Station> Stations { get; set; }
+    }
+
+}
