@@ -14,7 +14,7 @@ namespace Dashboard.Models
         public double? DirectOperator { get; set; }
         public double? IndirectOperator { get; set; }
 
-        public Guid UserId { get; set; } // Foreign key to User
+        public string UserId { get; set; } // Foreign key to User
         [ValidateNever]
         public User User { get; set; }
 

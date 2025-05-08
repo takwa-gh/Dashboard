@@ -36,12 +36,22 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStationService, StationService>();
+builder.Services.AddScoped<ILineService, LineService>();
 builder.Services.AddScoped<IHeaderService, HeaderService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+var context = services.GetRequiredService<AppDbContext>();
+// Initialize the database
+//await context.Database.EnsureCreatedAsync();
+await context.Database.MigrateAsync();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

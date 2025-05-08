@@ -29,8 +29,8 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-
-            if (await _authService.LoginAsync(model, HttpContext))
+            var flag = await _authService.LoginAsync(model, HttpContext);
+            if (flag)
                 return RedirectToAction("Index", "Dashboard");
 
             ModelState.AddModelError("", "Invalid login.");

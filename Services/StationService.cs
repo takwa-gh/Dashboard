@@ -9,16 +9,14 @@ namespace Dashboard.Services
     {
         private readonly AppDbContext _context;
 
-        public StationService(AppDbContext context)
+        public StationService(AppDbContext context,ILineService lineService)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<StationViewModel>> GetStationsForUserAsync(Guid userId, string role, string? userNameFilter = null)
+        public async Task<IEnumerable<StationViewModel>> GetStationsForUserAsync(string userId, string role, string? userNameFilter = null)
         {
-            var query = _context.Stations
-                .Include(s => s.User)
-                .AsQueryable();
+            IQueryable<Station> query = _context.Stations.Include(s => s.User); // Make sure to include related user
 
             if (role == "Manager")
             {
@@ -33,7 +31,7 @@ namespace Dashboard.Services
 
             return stations.Select(s => new StationViewModel
             {
-                StationId = s.StationId,
+                StationId = ""+s.StationId,
                 StationName = s.StationName,
                 GumValue = s.GumValue,
                 AwtValue = s.AwtValue,
@@ -43,19 +41,41 @@ namespace Dashboard.Services
                 UserId = s.UserId,
                 User = s.User!
             });
+
+
+            //var query = await _context.Stations
+            //    .Where(s=>s.UserId == userId)
+            //    .ToListAsync();
+
+            //var stationViewModels = query.Select(station => new StationViewModel
+            //{
+            //    StationId = station.StationId,
+            //    StationName = station.StationName,
+            //    GumValue = station.GumValue,
+            //    AwtValue = station.AwtValue,
+            //    PartNumber = station.PartNumber,
+            //    DirectOperator = station.DirectOperator,
+            //    IndirectOperator = station.IndirectOperator
+            //}).ToList();
+
+
+            //return stationViewModels;
+
+
         }
 
-        public async Task<CreateStationViewModel> InitCreateStationAsync(Guid userId)
+        public async Task<CreateStationViewModel> InitCreateStationAsync(string userId)
         {
             return new CreateStationViewModel { UserId = userId };
         }
 
-        public async Task<bool> CreateStationAsync(CreateStationViewModel model, Guid userId, string role)
+        public async Task<bool> CreateStationAsync(CreateStationViewModel model, string userId, string role)
         {
             if (role != "Manager" && role != "Admin")
                 return false;
 
-            var station = new Station
+            Station station = new Station();
+            station = new Station
             {
                 StationId = Guid.NewGuid(),
                 StationName = model.StationName,
@@ -64,15 +84,58 @@ namespace Dashboard.Services
                 PartNumber = model.PartNumber,
                 DirectOperator = model.DirectOperator,
                 IndirectOperator = model.IndirectOperator,
-                UserId = userId
+                UserId = userId,
+                LineId = model.lineId.Value,
             };
+            //if (model.lineId.HasValue)
+            //{
+            //    station = new Station
+            //    {
+            //        StationId = Guid.NewGuid(),
+            //        StationName = model.StationName,
+            //        GumValue = model.GumValue,
+            //        AwtValue = model.AwtValue,
+            //        PartNumber = model.PartNumber,
+            //        DirectOperator = model.DirectOperator,
+            //        IndirectOperator = model.IndirectOperator,
+            //        UserId = userId,
+            //        LineId = model.lineId.Value,
+            //    };
+            //}
+            //else
+            //{
+            //    var line = new Line
+            //    {
+            //        Name = model.line.Name,
+            //        TactTime = model.line.TactTime,
+            //        ConveyorSpeed = model.line.ConveyorSpeed,
+            //        TargetQuantity = model.line.TargetQuantity,
+            //        WorkingTime = model.line.WorkingTime,
+            //        ActualOutput = model.line.ActualOutput,
+            //        CycleTime = model.line.CycleTime
+            //    };
+            //    _context.Lines.Add(line);
+            //    await _context.SaveChangesAsync();
 
+            //    station = new Station
+            //    {
+            //        StationId = Guid.NewGuid(),
+            //        StationName = model.StationName,
+            //        GumValue = model.GumValue,
+            //        AwtValue = model.AwtValue,
+            //        PartNumber = model.PartNumber,
+            //        DirectOperator = model.DirectOperator,
+            //        IndirectOperator = model.IndirectOperator,
+            //        UserId = userId,
+            //        LineId = line.Id,
+            //    };
+            //}
             _context.Stations.Add(station);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<EditStationViewModel?> GetEditStationAsync(Guid stationId)
+        public async Task<EditStationViewModel?> GetEditStationAsync(string stationId)
         {
             var s = await _context.Stations.FindAsync(stationId);
             if (s == null) return null;
@@ -89,7 +152,7 @@ namespace Dashboard.Services
             };
         }
 
-        public async Task<bool> UpdateStationAsync(EditStationViewModel model, Guid currentUserId, string role)
+        public async Task<bool> UpdateStationAsync(EditStationViewModel model, string currentUserId, string role)
         {
             var station = await _context.Stations.FindAsync(model.StationId);
             if (station == null) return false;
@@ -109,18 +172,18 @@ namespace Dashboard.Services
             return true;
         }
 
-        public async Task<StationViewModel?> GetStationDetailsAsync(Guid id)
+        public async Task<StationViewModel?> GetStationDetailsAsync(string id)
         {
-            var s = await _context.Stations.Include(st => st.User).FirstOrDefaultAsync(st => st.StationId == id);
+            var s = await _context.Stations.Include(st => st.User).FirstOrDefaultAsync(st => ""+st.StationId == id);
             if (s == null) return null;
 
             return new StationViewModel
             {
-                StationId = s.StationId,
+                StationId = ""+s.StationId,
                 StationName = s.StationName,
                 GumValue = s.GumValue,
                 AwtValue = s.AwtValue,
-               
+
                 PartNumber = s.PartNumber,
                 DirectOperator = s.DirectOperator,
                 IndirectOperator = s.IndirectOperator,
@@ -129,9 +192,9 @@ namespace Dashboard.Services
             };
         }
 
-        public async Task<bool> DeleteStationAsync(Guid id, Guid userId)
+        public async Task<bool> DeleteStationAsync(string id, string userId)
         {
-            var station = await _context.Stations.FirstOrDefaultAsync(s => s.StationId == id);
+            var station = await _context.Stations.FirstOrDefaultAsync(s => ""+s.StationId == id);
             if (station == null) return false;
 
             // Un Manager peut seulement supprimer ses propres stations

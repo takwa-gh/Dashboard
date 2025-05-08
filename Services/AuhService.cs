@@ -6,6 +6,7 @@ using Dashboard.Data;
 using Microsoft.EntityFrameworkCore;
 using Dashboard.Models;
 
+
 namespace Dashboard.Services
 {
     public class AuthService : IAuthService
@@ -31,7 +32,7 @@ namespace Dashboard.Services
             new Claim(ClaimTypes.Role, user.Role)
         };
 
-            var identity = new ClaimsIdentity(claims, "Login"); 
+            var identity = new ClaimsIdentity(claims, "Login");
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return true;
