@@ -34,8 +34,10 @@ builder.Services.AddSession();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IHeaderService, HeaderService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 

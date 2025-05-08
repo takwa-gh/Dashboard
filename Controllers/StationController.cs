@@ -3,9 +3,11 @@ using Dashboard.Models;
 using Dashboard.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
+
 
 namespace Dashboard.Controllers
 {
@@ -83,49 +85,55 @@ namespace Dashboard.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-
-
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CreateStation()
         {
-            var userIdStr = User.FindFirst("UserId").Value;
-            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
+            var lines = _context.Lines
+                .Select(line => new SelectListItem
+                {
+                    Value = line.Id.ToString(),
+                    Text = line.Name
+                }).ToList();
+
+            var model = new CreateStationViewModel
             {
-                TempData["ErrorMessage"] = "Votre session est invalide.";
-                return RedirectToAction("Login", "Auth");
-            }
-            var station = new Station { UserId = userId };
-            return View(station);
+                Lines = (IEnumerable<System.Web.Mvc.SelectListItem>)lines // Remplir la liste des lignes disponibles
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Station station)
+        public async Task<IActionResult> CreateStation(CreateStationViewModel model)
         {
-            var userIdStr = User.FindFirst("UserId").Value;
-
-            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
-            {
-                TempData["ErrorMessage"] = "Invalid Session .";
-                return RedirectToAction("Login", "Auth");
-            }
-
-            station.UserId = userId;
-
             if (ModelState.IsValid)
             {
-                if (!User.IsInRole("Admin"))
+                var station = new Station
                 {
-                    _context.Stations.Add(station);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Station created successfully.";
-                    return RedirectToAction(nameof(Stations));
-                }
+                    StationName = model.StationName,
+                    LineId = model.LineId, // Lier à la ligne sélectionnée
+                    UserId = model.UserId
+                };
+
+                _context.Stations.Add(station);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Station created successfully.";
+                return RedirectToAction("Stations");
             }
 
-            TempData["ErrorMessage"] = "Please correct the errors and try again.";
-            return View(station);
+            // Si le modèle est invalide, renvoyer les lignes disponibles
+            model.Lines = (IEnumerable<System.Web.Mvc.SelectListItem>)_context.Lines
+                .Select(line => new SelectListItem
+                {
+                    Value = line.Id.ToString(),
+                    Text = line.Name
+                }).ToList();
+
+            return View(model);
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)

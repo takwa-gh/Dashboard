@@ -4,6 +4,7 @@ using Dashboard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dashboard.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250508045538_CreateLineTable")]
+    partial class CreateLineTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace Dashboard.Migrations
 
             modelBuilder.Entity("Dashboard.Models.Line", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("lineId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("lineId"));
 
                     b.Property<double>("ActualOutput")
                         .HasColumnType("float");
@@ -52,9 +55,9 @@ namespace Dashboard.Migrations
                     b.Property<double>("WorkingTime")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("lineId");
 
-                    b.ToTable("Lines");
+                    b.ToTable("Line");
                 });
 
             modelBuilder.Entity("Dashboard.Models.Station", b =>

@@ -1,91 +1,101 @@
-﻿function createRealGauge(canvasId, value, maxValue = 100, label = "") {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-
-    // Si tu utilises Chart.js 3 ou supérieur, il faut enregistrer le plugin
-    Chart.register(ChartGauge); // Enregistre le plugin gauge (ChartGauge)
-
-    new Chart(ctx, {
-        type: 'gauge',  // Utilise le type 'gauge' uniquement si le plugin est ajouté
-        data: {
-            datasets: [{
-                value: value,
-                minValue: 0,
-                data: [50, 70, 90, maxValue],
-                backgroundColor: ['green', 'yellow', 'orange', 'red'],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            animation: { duration: 1000 },
-            needle: {
-                radiusPercentage: 2,
-                widthPercentage: 3.2,
-                lengthPercentage: 80,
-                color: 'black'
-            },
-            valueLabel: {
+﻿// Manpower Allocation Gauge
+var ctx1 = document.getElementById('gauge1').getContext('2d');
+var gauge1 = new Chart(ctx1, {
+    type: 'doughnutGauge',
+    data: {
+        datasets: [{
+            data: [@Model.ManpowerAllocation], // Utilisez la valeur ManpowerAllocation du modèle
+            backgroundColor: ['#36A2EB'], // Couleur de la jauge
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        circumference: Math.PI,
+        rotation: Math.PI,
+        plugins: {
+            datalabels: {
                 display: true,
-                formatter: (val) => `${Math.round(val)}%`
-            },
-            plugins: {
-                tooltip: { enabled: false },
-                title: {
-                    display: true,
-                    text: label,
-                    font: { size: 16 }
+                formatter: function (value) {
+                    return value + '%'; // Affichage du pourcentage dans la jauge
                 }
             }
         }
-    });
-}
-function initDashboardCharts(data) {
-    // Jauges
-    createRealGauge("gauge1", (data.totalGum !== 0 ? (data.totalAwt / data.totalGum) * 100 : 0), 150, "AWT vs GUM (%)");
-    createRealGauge("gauge2", data.manpower, 200, "Total Manpower");
-    createRealGauge("gauge3", data.effectiveness, 100, "Effectiveness (%)");
+    }
+});
 
-    // Donut chart
-    new Chart(document.getElementById('donutChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['AWT', 'Remaining to GUM'],
-            datasets: [{
-                data: [data.totalAwt, Math.max(0, data.totalGum - data.totalAwt)],
-                backgroundColor: [data.donutColor, '#e0e0e0'],
-            }]
-        },
-        options: {
-            cutout: '70%',
-            plugins: {
-                tooltip: { enabled: false },
-                legend: { display: true, position: 'bottom' },
-            }
-        }
-    });
-
-    // Bar chart : comparaison globale AWT vs GUM
-    //new Chart(document.getElementById('barChart'), {
-      //  type: 'bar',
-      /*  data: {
-            labels: ['AWT > GUM', 'AWT ≈ GUM (≥ 90%)', 'AWT < 90% GUM'],
-            datasets: [{
-                label: 'Nombre de Stations',
-                data: [data.awtGreater, data.awtBetween, data.awtLess],
-                backgroundColor: ['#ff6384', '#4bc0c0', '#ffce56']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    stepSize: 1
+// AWT vs GUM Gauge
+var ctx2 = document.getElementById('gauge2').getContext('2d');
+var gauge2 = new Chart(ctx2, {
+    type: 'doughnutGauge',
+    data: {
+        datasets: [{
+            data: [@Model.PourcentageAWTvsGUM], // Utilisez la valeur PourcentageAWTvsGUM
+            backgroundColor: ['#FF6384'], // Couleur de la jauge
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        circumference: Math.PI,
+        rotation: Math.PI,
+        plugins: {
+            datalabels: {
+                display: true,
+                formatter: function (value) {
+                    return value + '%'; // Affichage du pourcentage dans la jauge
                 }
             }
         }
-    }) ;
+    }
+});
+
+// Line Effectiveness Gauge
+var ctx3 = document.getElementById('gauge3').getContext('2d');
+var gauge3 = new Chart(ctx3, {
+    type: 'doughnutGauge',
+    data: {
+        datasets: [{
+            data: [@Model.LineEffectiveness], // Utilisez la valeur LineEffectiveness
+            backgroundColor: ['#FFCD56'], // Couleur de la jauge
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        circumference: Math.PI,
+        rotation: Math.PI,
+        plugins: {
+            datalabels: {
+                display: true,
+                formatter: function (value) {
+                    return value + '%'; // Affichage du pourcentage dans la jauge
+                }
+            }
+        }
+    }
+});
+
+// Bar Chart for visualizing different metrics
+var ctx4 = document.getElementById('barChart').getContext('2d');
+var barChart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+        labels: ['Manpower Allocation', 'AWT vs GUM', 'Line Effectiveness'], // Les noms des KPI
+        datasets: [{
+            label: 'KPI Values',
+            data: [@Model.ManpowerAllocation, @Model.PourcentageAWTvsGUM, @Model.LineEffectiveness], // Les valeurs des KPI
+            backgroundColor: ['#36A2EB', '#FF6384', '#FFCD56'], // Couleurs des barres
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
 

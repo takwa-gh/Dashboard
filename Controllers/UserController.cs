@@ -34,7 +34,7 @@ namespace Dashboard.Controllers
 
         // Traitement de création
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel model)
+        public async Task<IActionResult> CreateUser(CreateUserViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -57,7 +57,7 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _userService.UpdateAsync(model);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Users));
         }
 
         // Confirmation de suppression

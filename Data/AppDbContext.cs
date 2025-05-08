@@ -13,6 +13,8 @@ namespace Dashboard.Data
         public DbSet<User> Users { get; set; }
         //DbSet for Stations
         public DbSet<Station> Stations { get; set; }
+        //DbSet for Lines
+        public DbSet<Line> Lines { get; set; }
     }
 
 }
