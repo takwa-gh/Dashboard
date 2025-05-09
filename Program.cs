@@ -47,9 +47,6 @@ var app = builder.Build();
 var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetRequiredService<AppDbContext>();
-// Initialize the database
-//await context.Database.EnsureCreatedAsync();
-await context.Database.MigrateAsync();
 
 
 

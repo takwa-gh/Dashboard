@@ -4,11 +4,11 @@ namespace Dashboard.Services
 {
     public interface IAuthService
     {
-        Task<bool> LoginAsync(LoginViewModel model, HttpContext httpContext);
-        Task LogoutAsync(HttpContext httpContext);
-        Task<bool> SignUpAsync(SignUpViewModel model);
-        Task<UserProfileViewModel?> GetProfileAsync(Guid userId);
-        Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
+        Task<bool> Login(LoginViewModel model, HttpContext httpContext);
+        Task Logout(HttpContext httpContext);
+        Task<bool> SignUp(SignUpViewModel model);
+        Task<UserProfileViewModel?> GetProfile(int userId);
+        Task<bool> ChangePassword(int userId, string currentPassword, string newPassword);
 
     }
 

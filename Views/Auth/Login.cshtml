@@ -4,16 +4,8 @@
 @{
     ViewData["Title"] = "Login";
     Layout = "_AuthLayout";
-    <link rel="stylesheet" href="~/css/auth.css" />
+    
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-
     <div class="auth-container">
         <div class="auth-form">
             <form asp-action="Login" method="post">
@@ -35,9 +27,5 @@
                     <a asp-controller="Auth" asp-action="SignUp" class="log-link">Don't have an account ? SignUp</a>
                 </p>
             </form>
-
-
         </div>
     </div>
-</body>
-</html>

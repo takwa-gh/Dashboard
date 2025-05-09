@@ -1,15 +1,23 @@
 ﻿@using Dashboard.ViewModels
 
 @model UserProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_Layout";
+}
 
 <h2>Profile</h2>
+<div>
 
-<table class="table">
-    <tr><th>Nom d'utilisateur</th><td>@Model.UserName</td></tr>
+    <table class="table">
+    <tr><th>UserName</th><td>@Model.UserName</td></tr>
     <tr><th>Email</th><td>@Model.Email</td></tr>
-    <tr><th>Rôle</th><td>@Model.Role</td></tr>
-</table>
-<div class="mt-4">
+    <tr><th>Role</th><td>@Model.Role</td></tr>
+    </table>
+
+    <div class="mt-4">
     <a class="btn btn-primary" asp-action="ChangePassword">Change Password</a>
     <a class="btn btn-danger" asp-action="Logout">Logout</a>
+    </div>
+
 </div>

@@ -13,7 +13,7 @@ using System.IO.Compression;
 using System.Security.Claims;
 
 namespace Dashboard.Controllers
-{   
+{
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -22,72 +22,102 @@ namespace Dashboard.Controllers
         {
             _authService = authService;
         }
-
+        [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
+        //action declanche en envoyant les informations du connexion
         public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-            var flag = await _authService.LoginAsync(model, HttpContext);
-            if (flag)
-                return RedirectToAction("Index", "Dashboard");
 
-            ModelState.AddModelError("", "Invalid login.");
+        {
+            //validation des champs du formulaire
+            if (!ModelState.IsValid) 
+                return View(model); // return de meme view + message d'erreur
+            //appel de service de login
+            var isLoginSuccessful = await _authService.Login(model, HttpContext);
+            //si le login est reussi, redirection vers la page d'accueil de dashboard
+            if (isLoginSuccessful)
+                return RedirectToAction("Index", "Dashboard");
+            //sinon une erreur de connexion
+            ModelState.AddModelError("", "Invalid email or password.");
             return View(model);
         }
 
         public async Task<IActionResult> Logout()
         {
-            await _authService.LogoutAsync(HttpContext);
+            await _authService.Logout(HttpContext);
             return RedirectToAction("Login");
         }
-        
+
         public IActionResult SignUp() => View();
 
         [HttpPost]
+        //action declanche en envoyant les informations du formulaire d'inscription
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            if (await _authService.SignUpAsync(model))
-                return RedirectToAction("Login");
-
-            ModelState.AddModelError("", "Email already in use.");
-            return View(model);
-        }
-        public async Task<IActionResult> GetProfileAsync()
-        {
-            var userId = Guid.Parse(User.FindFirst("UserId")?.Value ?? "");
-            var profile = await _authService.GetProfileAsync(userId);
-            if (profile == null) return NotFound();
-            return View(profile);
-        }
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
+            // validation des touts le champs de formulaire d'inscription
+            if (!ModelState.IsValid) 
                 return View(model);
-
-            var userId = Guid.Parse(User.FindFirst("UserId")?.Value ?? "");
-
-            var result = await _authService.ChangePasswordAsync(userId, model.CurrentPassword, model.NewPassword);
-
-            if (!result)
+            if(model.Password != model.ConfirmPassword)
             {
-                ModelState.AddModelError("", "Le mot de passe actuel est incorrect.");
+                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
                 return View(model);
             }
 
-            ViewBag.Message = "Mot de passe changé avec succès.";
+            var isSignedUp = await _authService.SignUp(model);
+            if (isSignedUp)
+                return RedirectToAction("Login");
+
+            ModelState.AddModelError("", "Email already exists.");
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
+                return Unauthorized();
+
+            var profile = await _authService.GetProfile(userId);
+            if (profile == null) return NotFound();
+
+            return View(profile);
+        }
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
             return View();
         }
 
+        [HttpPost]
+        [Authorize] // necessite de connexion pour changer pwd
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            //verifier les champs sont valides 
+            if (!ModelState.IsValid)
+                return View(model);
 
+            //recuperer l'ID de l'utilisateur connecté
+
+            if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
+                return Unauthorized();
+
+            //appel de service de changement de mot de passe
+            var result = await _authService.ChangePassword(userId, model.CurrentPassword, model.NewPassword);
+
+            if (!result)
+            {
+                ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
+                return View(model);
+            }
+
+            ViewBag.Message = "password updated successfully.";
+            return View();
+        }
     }
-
 }
+
+
 
 
 

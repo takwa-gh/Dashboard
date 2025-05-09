@@ -10,7 +10,7 @@ namespace Dashboard.ViewModels
         public string UserName { get; set; }
 
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage ="Invalid Email")]
         public string Email { get; set; }
 
         [Required]

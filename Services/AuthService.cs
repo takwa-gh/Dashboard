@@ -18,10 +18,10 @@ namespace Dashboard.Services
             _context = context;
         }
 
-        public async Task<bool> LoginAsync(LoginViewModel model, HttpContext httpContext)
+        public async Task<bool> Login(LoginViewModel model, HttpContext httpContext)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email); //Recherche de l'utilisateur par email
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password)) // Vérification du mot de passe
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email); 
+            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password)) 
                 return false;
 
             var claims = new List<Claim> // Création de liste des claims
@@ -38,19 +38,19 @@ namespace Dashboard.Services
             return true;
         }
 
-        public async Task LogoutAsync(HttpContext httpContext)
+        public async Task Logout(HttpContext httpContext)
         {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        public async Task<bool> SignUpAsync(SignUpViewModel model)
+        public async Task<bool> SignUp(SignUpViewModel model)
         {
             if (await _context.Users.AnyAsync(u => u.Email == model.Email))
                 return false;
 
             var user = new User
             {
-                UserId = Guid.NewGuid(),
+                UserId = new  int(),
                 Email = model.Email,
                 UserName = model.UserName,
                 Role = "Manager",
@@ -63,22 +63,21 @@ namespace Dashboard.Services
             return true;
         }
 
-        public async Task<UserProfileViewModel?> GetProfileAsync(Guid userId)
+        public async Task<UserProfileViewModel?> GetProfile(int userId) 
         {
-            var user = await _context.Users.FindAsync(userId);
+            // chercher le user par son UserId
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId); // Adjust query to match Guid type
             if (user == null) return null;
 
             return new UserProfileViewModel
-            {
-                UserId = user.UserId,
+            { 
                 UserName = user.UserName,
                 Email = user.Email,
                 Role = user.Role,
-
             };
         }
 
-        public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
+        public async Task<bool> ChangePassword(int userId, string currentPassword, string newPassword)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null || !BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))
