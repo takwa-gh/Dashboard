@@ -4,13 +4,13 @@ namespace Dashboard.Services
 {
     public interface IStationService
     {
-        Task<IEnumerable<StationViewModel>> GetStationsForUserAsync(string userId, string role, string? userNameFilter = null);
-        Task<EditStationViewModel?> GetEditStationAsync(string stationId);
-        Task<bool> UpdateStationAsync(EditStationViewModel model, string currentUserId, string role);
-        Task<CreateStationViewModel> InitCreateStationAsync(string userId);
-        Task<bool> CreateStationAsync(CreateStationViewModel model, string userId, string role);
-        Task<StationViewModel?> GetStationDetailsAsync(string id);
-        Task<bool> DeleteStationAsync(string id, string userId);
+        Task<List<StationViewModel>> GetStationsForManagerAsync(int userId);
+        Task<List<StationViewModel>> GetStationsForAdminAsync(string? userName);
+        
+        Task<bool> EditStationAsync(EditStationViewModel model, int userId);
+        Task<bool> CreateStationAsync(CreateStationViewModel model, int userId);
+      
+        Task<bool> DeleteStationAsync(int id, int userId);
     }
 
 }

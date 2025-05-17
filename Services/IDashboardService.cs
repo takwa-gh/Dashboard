@@ -4,6 +4,9 @@ namespace Dashboard.Services
 {
     public interface IDashboardService
     {
-        Task<DashboardViewModel> GetDashboardDataAsync(int lineId);
+        Task<DashboardViewModel> GetDashboardDataAsync();
+        
+
+
     }
 }

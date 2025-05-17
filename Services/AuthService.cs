@@ -50,10 +50,9 @@ namespace Dashboard.Services
 
             var user = new User
             {
-                UserId = new  int(),
                 Email = model.Email,
                 UserName = model.UserName,
-                Role = "Manager",
+                Role = "Admin",
                 Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
 
@@ -61,20 +60,6 @@ namespace Dashboard.Services
             await _context.SaveChangesAsync();
 
             return true;
-        }
-
-        public async Task<UserProfileViewModel?> GetProfile(int userId) 
-        {
-            // chercher le user par son UserId
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId); // Adjust query to match Guid type
-            if (user == null) return null;
-
-            return new UserProfileViewModel
-            { 
-                UserName = user.UserName,
-                Email = user.Email,
-                Role = user.Role,
-            };
         }
 
         public async Task<bool> ChangePassword(int userId, string currentPassword, string newPassword)

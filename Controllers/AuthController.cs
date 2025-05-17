@@ -71,17 +71,9 @@ namespace Dashboard.Controllers
             ModelState.AddModelError("", "Email already exists.");
             return View(model);
         }
-        [HttpGet]
-        public async Task<IActionResult> Profile()
-        {
-            if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
-                return Unauthorized();
-
-            var profile = await _authService.GetProfile(userId);
-            if (profile == null) return NotFound();
-
-            return View(profile);
-        }
+       
+        
+        
         [HttpGet]
         [Authorize]
         public IActionResult ChangePassword()

@@ -2,64 +2,97 @@
 @model Dashboard.ViewModels.DashboardViewModel
 
 @{
-    ViewData["Title"] = "";
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-
+    ViewData["Title"] = "Dashboard - Home";
 }
+
+<!-- CSS spécifique à ce dashboard -->
+<link rel="stylesheet" href="~/css/dashboard.css" />
 
 <section class="content">
     <div class="container-fluid">
-       
 
-        <!-- Ligne 2 : Trois jauges -->
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">Manpower Allocation</div>
-                    <div class="card-body">
-                        <canvas id="gauge1"></canvas>
+        @if (Model.HasData)
+        {
+            <!-- Ligne 1 : Trois jauges -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">Manpower Allocation</div>
+                        <div class="card-body">
+                            <canvas id="gauge1"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">AWT vs GUM</div>
-                    <div class="card-body">
-                        <canvas id="gauge2"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">Line Effectiveness</div>
-                    <div class="card-body">
-                        <canvas id="gauge3"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">AWT vs GUM</div>
+                        <div class="card-body">
+                            <canvas id="gauge2"></canvas>
 
-        <!-- Ligne 3 : Bar Chart -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header"> </div>
-                    <div class="card-body">
-                        <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">Line Effectiveness</div>
+                        <div class="card-body">
+                            <canvas id="gauge3"></canvas>
+
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Ligne 2: Bar Chart -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">GUM vs AWT Breakdown</div>
+                        <div class="card-body">
+                            <canvas id="barChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning mt-4">
+                Aucune donnée disponible pour le moment. Veuillez ajouter des stations ou configurer les paramètres.
+            </div>
+        }
 
     </div>
 </section>
+
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-gauge@3.0.0/dist/chartjs-chart-gauge.min.js"></script>
+    <script src="~/lib/gauge/gauge.min.js"></script>
+    <script src="~/lib/chart.js/dist/chart.min.js"></script>
 
-    <script src="~/js/dashboard.js"></script>
-    
+    <script>
+        const modelData = @Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }));
+        
+        window.dashboardData = modelData;
+
+        window.chartData = {
+            labels: modelData.stations.map(s => s.stationName),
+            gumData: modelData.stations.map(s => s.gumValue),
+            awtData: modelData.stations.map(s => s.awtValue),
+            tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.tactTime),
+            conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.conveyorSpeed),
+            cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.cycleTime),
 
 
+
+        };
+    </script>
+    <script src="~/js/dashboard.js"></script>    
 }
+
+
+
+
 

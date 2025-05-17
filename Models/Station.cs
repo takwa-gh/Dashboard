@@ -4,21 +4,20 @@ namespace Dashboard.Models
 {
     public class Station
     {
-        public Guid StationId { get; set; } = Guid.NewGuid();
+        public int StationId { get; set; } =new int();
         
-        public string StationName { get; set; } = string.Empty;
-        public double? GumValue { get; set; }
-        public double? AwtValue { get; set; }
-        public string? PartNumber { get; set; } = string.Empty;
+        public required string StationName { get; set; }
+        public required double GumValue { get; set; }
+        public required double AwtValue { get; set; }
+        public required string PartNumber { get; set; } = string.Empty;
         
-        public double? DirectOperator { get; set; }
-        public double? IndirectOperator { get; set; }
+        public required double DirectOperator { get; set; }
+        public required double IndirectOperator { get; set; }
 
-        public string UserId { get; set; } // Foreign key to User
+        public required int UserId { get; set; } // Foreign key to User
         [ValidateNever]
-        public User User { get; set; }
+        public  User User { get; set; }
 
-        public int LineId { get; set; }
-        public Line Line { get; set; }  // Navigation property
+       
     }
 }

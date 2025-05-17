@@ -1,35 +1,40 @@
-﻿@model Dashboard.ViewModels.CreateStationPageViewModel
+﻿@model Dashboard.ViewModels.CreateStationViewModel
 
 <form asp-action="CreateStation" method="post">
+    <input asp-for="UserId" type="hidden" />
+
     <div class="form-group">
-        <label asp-for="Station.StationName" class="control-label"></label>
-        <input asp-for="Station.StationName" class="form-control" />
-        <span asp-validation-for="Station.StationName" class="text-danger"></span>
+        <label asp-for="StationName" class="control-label"></label>
+        <input asp-for="StationName" class="form-control" />
+        <span asp-validation-for="StationName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Station.lineId" class="control-label">Select Line</label>
-        <select asp-for="Station.lineId" class="form-control">
-            <option value="">--Select Line--</option>
-            @foreach (var line in Model.Lines)
-            {
-                <option value="@line.Id">@line.Name</option>
-            }
-        </select>
-        <span asp-validation-for="Station.lineId" class="text-danger"></span>
+        <label asp-for="GumValue" class="control-label"></label>
+        <input asp-for="GumValue" class="form-control" />
+        <span asp-validation-for="GumValue" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Station.GumValue" class="control-label"></label>
-        <input asp-for="Station.GumValue" class="form-control" />
-        <span asp-validation-for="Station.GumValue" class="text-danger"></span>
+        <label asp-for="AwtValue" class="control-label"></label>
+        <input asp-for="AwtValue" class="form-control" />
+        <span asp-validation-for="AwtValue" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label asp-for="Station.AwtValue" class="control-label"></label>
-        <input asp-for="Station.AwtValue" class="form-control" />
-        <span asp-validation-for="Station.AwtValue" class="text-danger"></span>
+        <label asp-for="PartNumber" class="control-label"></label>
+        <input asp-for="PartNumber" class="form-control" />
+        <span asp-validation-for="PartNumber" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DirectOperator" class="control-label"></label>
+        <input asp-for="DirectOperator" class="form-control" />
+        <span asp-validation-for="DirectOperator" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IndirectOperator" class="control-label"></label>
+        <input asp-for="IndirectOperator" class="form-control" />
+        <span asp-validation-for="IndirectOperator" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create Station</button>
+    <button  type="submit" class="btn btn-primary">Create Station</button>
 </form>

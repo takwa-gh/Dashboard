@@ -1,6 +1,7 @@
 ﻿using Dashboard.Data;
 using Dashboard.Models;
 using Dashboard.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dashboard.Services
@@ -9,75 +10,61 @@ namespace Dashboard.Services
     {
         private readonly AppDbContext _context;
 
-        public StationService(AppDbContext context,ILineService lineService)
+        public StationService(AppDbContext context)
         {
             _context = context;
         }
-
-        public async Task<IEnumerable<StationViewModel>> GetStationsForUserAsync(string userId, string role, string? userNameFilter = null)
+        //recuperation des stations selon le role de l'user
+        public async Task<List<StationViewModel>> GetStationsForManagerAsync(int userId)
         {
-            IQueryable<Station> query = _context.Stations.Include(s => s.User); // Make sure to include related user
+            var stations = await _context.Stations
+                .Where(s => s.UserId == userId)
+                .ToListAsync();
 
-            if (role == "Manager")
+            return stations.Select(station => new StationViewModel
             {
-                query = query.Where(s => s.UserId == userId);
-            }
-            else if (role == "Admin" && !string.IsNullOrWhiteSpace(userNameFilter))
-            {
-                query = query.Where(s => s.User != null && s.User.UserName.Contains(userNameFilter));
-            }
-
-            var stations = await query.ToListAsync();
-
-            return stations.Select(s => new StationViewModel
-            {
-                StationId = ""+s.StationId,
-                StationName = s.StationName,
-                GumValue = s.GumValue,
-                AwtValue = s.AwtValue,
-                PartNumber = s.PartNumber,
-                DirectOperator = s.DirectOperator,
-                IndirectOperator = s.IndirectOperator,
-                UserId = s.UserId,
-                User = s.User!
-            });
-
-
-            //var query = await _context.Stations
-            //    .Where(s=>s.UserId == userId)
-            //    .ToListAsync();
-
-            //var stationViewModels = query.Select(station => new StationViewModel
-            //{
-            //    StationId = station.StationId,
-            //    StationName = station.StationName,
-            //    GumValue = station.GumValue,
-            //    AwtValue = station.AwtValue,
-            //    PartNumber = station.PartNumber,
-            //    DirectOperator = station.DirectOperator,
-            //    IndirectOperator = station.IndirectOperator
-            //}).ToList();
-
-
-            //return stationViewModels;
-
-
+                StationId = station.StationId,
+                StationName = station.StationName,
+                GumValue = station.GumValue,
+                AwtValue = station.AwtValue,
+                PartNumber = station.PartNumber,
+                DirectOperator = station.DirectOperator,
+                IndirectOperator = station.IndirectOperator
+            }).ToList();
         }
 
-        public async Task<CreateStationViewModel> InitCreateStationAsync(string userId)
+        public async Task<List<StationViewModel>> GetStationsForAdminAsync(string? userName)
         {
-            return new CreateStationViewModel { UserId = userId };
-        }
+            var query = _context.Stations
+                .Include(s => s.User)
+                .AsQueryable();
 
-        public async Task<bool> CreateStationAsync(CreateStationViewModel model, string userId, string role)
-        {
-            if (role != "Manager" && role != "Admin")
-                return false;
-
-            Station station = new Station();
-            station = new Station
+            if (!string.IsNullOrEmpty(userName))
             {
-                StationId = Guid.NewGuid(),
+                var lowered = userName.ToLower();
+                query = query.Where(s => s.User != null && s.User.UserName.ToLower().Contains(lowered));
+            }
+
+            var stations = await query.OrderBy(s => s.StationId).ToListAsync();
+
+            return stations.Select(station => new StationViewModel
+            {
+                StationId = station.StationId,
+                StationName = station.StationName,
+                GumValue = station.GumValue,
+                AwtValue = station.AwtValue,
+                PartNumber = station.PartNumber,
+                DirectOperator = station.DirectOperator,
+                IndirectOperator = station.IndirectOperator,
+               
+            }).ToList();
+        }
+      
+        // create new station dans bd
+        public async Task<bool> CreateStationAsync(CreateStationViewModel model, int userId)
+        {
+            var station = new Station()
+            {
                 StationName = model.StationName,
                 GumValue = model.GumValue,
                 AwtValue = model.AwtValue,
@@ -85,80 +72,21 @@ namespace Dashboard.Services
                 DirectOperator = model.DirectOperator,
                 IndirectOperator = model.IndirectOperator,
                 UserId = userId,
-                LineId = model.lineId.Value,
+                
             };
-            //if (model.lineId.HasValue)
-            //{
-            //    station = new Station
-            //    {
-            //        StationId = Guid.NewGuid(),
-            //        StationName = model.StationName,
-            //        GumValue = model.GumValue,
-            //        AwtValue = model.AwtValue,
-            //        PartNumber = model.PartNumber,
-            //        DirectOperator = model.DirectOperator,
-            //        IndirectOperator = model.IndirectOperator,
-            //        UserId = userId,
-            //        LineId = model.lineId.Value,
-            //    };
-            //}
-            //else
-            //{
-            //    var line = new Line
-            //    {
-            //        Name = model.line.Name,
-            //        TactTime = model.line.TactTime,
-            //        ConveyorSpeed = model.line.ConveyorSpeed,
-            //        TargetQuantity = model.line.TargetQuantity,
-            //        WorkingTime = model.line.WorkingTime,
-            //        ActualOutput = model.line.ActualOutput,
-            //        CycleTime = model.line.CycleTime
-            //    };
-            //    _context.Lines.Add(line);
-            //    await _context.SaveChangesAsync();
 
-            //    station = new Station
-            //    {
-            //        StationId = Guid.NewGuid(),
-            //        StationName = model.StationName,
-            //        GumValue = model.GumValue,
-            //        AwtValue = model.AwtValue,
-            //        PartNumber = model.PartNumber,
-            //        DirectOperator = model.DirectOperator,
-            //        IndirectOperator = model.IndirectOperator,
-            //        UserId = userId,
-            //        LineId = line.Id,
-            //    };
-            //}
             _context.Stations.Add(station);
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public async Task<EditStationViewModel?> GetEditStationAsync(string stationId)
-        {
-            var s = await _context.Stations.FindAsync(stationId);
-            if (s == null) return null;
-
-            return new EditStationViewModel
-            {
-                StationId = s.StationId,
-                StationName = s.StationName,
-                GumValue = s.GumValue ?? 0,
-                AwtValue = s.AwtValue ?? 0,
-                PartNumber = s.PartNumber,
-                DirectOperator = s.DirectOperator ?? 0,
-                IndirectOperator = s.IndirectOperator ?? 0
-            };
-        }
-
-        public async Task<bool> UpdateStationAsync(EditStationViewModel model, string currentUserId, string role)
+        
+        public async Task<bool> EditStationAsync(EditStationViewModel model, int userId)
         {
             var station = await _context.Stations.FindAsync(model.StationId);
             if (station == null) return false;
 
             // Seul le manager propriétaire peut modifier
-            if (role == "Manager" && station.UserId != currentUserId)
+            if (station.UserId != userId)
                 return false;
 
             station.StationName = model.StationName;
@@ -171,30 +99,9 @@ namespace Dashboard.Services
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public async Task<StationViewModel?> GetStationDetailsAsync(string id)
+        public async Task<bool> DeleteStationAsync(int id, int userId)
         {
-            var s = await _context.Stations.Include(st => st.User).FirstOrDefaultAsync(st => ""+st.StationId == id);
-            if (s == null) return null;
-
-            return new StationViewModel
-            {
-                StationId = ""+s.StationId,
-                StationName = s.StationName,
-                GumValue = s.GumValue,
-                AwtValue = s.AwtValue,
-
-                PartNumber = s.PartNumber,
-                DirectOperator = s.DirectOperator,
-                IndirectOperator = s.IndirectOperator,
-                UserId = s.UserId,
-                User = s.User!
-            };
-        }
-
-        public async Task<bool> DeleteStationAsync(string id, string userId)
-        {
-            var station = await _context.Stations.FirstOrDefaultAsync(s => ""+s.StationId == id);
+            var station = await _context.Stations.FirstOrDefaultAsync(s => s.StationId == id);
             if (station == null) return false;
 
             // Un Manager peut seulement supprimer ses propres stations

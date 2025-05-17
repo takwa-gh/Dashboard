@@ -21,14 +21,21 @@ namespace Dashboard.Controllers
             _dashboardService = dashboardService;
             _headerService = headerService;
         }
-
-        public async Task<IActionResult> Index(int lineId)
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
+            //injection d'entete
             ViewBag.Header = _headerService.GetHeaderData();
-            var model = await _dashboardService.GetDashboardDataAsync(lineId);
+            //recuperation des kpis
+            var model = await _dashboardService.GetDashboardDataAsync();
+            if (!model.HasData)
+            {
+                ViewBag.Message = "Aucune station disponible.";
+            }
             return View(model);
         }
     }
 }
+
    
 

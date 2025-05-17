@@ -34,9 +34,8 @@ builder.Services.AddSession();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStationService, StationService>();
-builder.Services.AddScoped<ILineService, LineService>();
+builder.Services.AddScoped<IDashboardParamService, DashboardParamService>();
 builder.Services.AddScoped<IHeaderService, HeaderService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
@@ -57,15 +56,14 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseRouting();
 app.UseSession();
+app.UseStaticFiles();
 app.UseAuthentication();    
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Auth}/{action=Login}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
+    
 
 
 app.Run();

@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dashboard.Services
 {
-   public class DashboardService : IDashboardService
-   {
+    public class DashboardService : IDashboardService
+    {
         private readonly AppDbContext _context;
 
         public DashboardService(AppDbContext context)
@@ -14,115 +14,103 @@ namespace Dashboard.Services
             _context = context;
         }
 
-        public async Task<DashboardViewModel> GetDashboardDataAsync(int lineId)
+        public async Task<DashboardViewModel> GetDashboardDataAsync()
         {
-            var line = await _context.Lines
-               .Include(l => l.Stations)
-               .FirstOrDefaultAsync(l => l.Id == lineId);
+            // 1. Charger toutes les stations
+            var stations = await _context.Stations.ToListAsync();
+            
+            // 2. Charger les derniers paramètres globaux
+            var latestParams = await _context.DashboardParams
+                .OrderByDescending(b => b.Id)
+                .FirstOrDefaultAsync();
 
-            if (line == null || !line.Stations.Any())
-                return GetDefaultDashboard();
+            // Normalisation
+            double tactTime = Normalize(latestParams?.TactTime ?? 0);
+            double conveyorSpeed = Normalize(latestParams?.ConveyorSpeed ?? 0);
+            double cycleTime = Normalize(latestParams?.CycleTime ?? 0);
+            double actualOutput = Normalize(latestParams?.ActualOutput ?? 0);
+            double workingTime = Normalize(latestParams?.WorkingTime ?? 0);
+            double targetQuantity = Normalize(latestParams?.TargetQuantity ?? 0);
 
-            var tactTime = line.TactTime;
-            var conveyorSpeed = line.ConveyorSpeed;
-            var stations = line.Stations.ToList();
+            // 3. Calculs des indicateurs
+            double totalGum = Normalize(stations.Sum(s => s.GumValue));
+            double totalAwt = Normalize(stations.Sum(s => s.AwtValue));
+            double totalManpower = Normalize(stations.Sum(s => s.DirectOperator + s.IndirectOperator));
 
-            double totalGum = Normalize(stations.Sum(s => s.GumValue ?? 0));
-            double totalAwt = Normalize(stations.Sum(s => s.AwtValue ?? 0));
-            double totalManpower = Normalize(stations.Sum(s => (s.DirectOperator ?? 0) + (s.IndirectOperator ?? 0)));
+            var (pourcentage, donutColor, evalAWTvsGUM) = EvaluerAwtVsGum(totalAwt, totalGum);
 
-            // KPI 1: AWT vs GUM
-            var (pourcentage, couleur, evaluation) = EvaluerAwtVsGum(totalAwt, totalGum);
-
-            // KPI 2: Manpower Allocation
             double manpowerNeeded = (tactTime > 0) ? Normalize(totalAwt / tactTime) : 1;
             double manpowerAllocation = (manpowerNeeded > 0) ? Math.Round(totalManpower / manpowerNeeded * 100, 2) : 0;
-            var (colorMP, evalMP) = EvaluerManpowerAllocation(manpowerAllocation);
+            var (manpowerColor, manpowerEval) = EvaluerManpowerAllocation(manpowerAllocation);
 
-            // KPI 3: Line Effectiveness
-            double totalAbsDifference = stations
-                .Where(s => s.AwtValue.HasValue)
-                .Sum(s => Math.Abs(s.AwtValue.Value - conveyorSpeed));
-
-            int totalOperators = (int)stations.Sum(s => (s.DirectOperator ?? 0) + (s.IndirectOperator ?? 0));
-
+            double totalAbsDiff = stations.Sum(s => Math.Abs(cycleTime - conveyorSpeed));
             double lineEffectiveness = 0;
-            if (totalOperators > 0 && conveyorSpeed > 0)
+            if (totalManpower > 0 && conveyorSpeed > 0)
             {
-                lineEffectiveness = Math.Round((totalAbsDifference / (totalOperators * line.ConveyorSpeed)) * 100, 2);
+                lineEffectiveness = Math.Round((totalAbsDiff / (totalManpower * conveyorSpeed)) * 100, 2);
             }
-            var (colorLE, evalLE) = EvaluerLineEffectiveness(lineEffectiveness);
+            var (leColor, leEval) = EvaluerLineEffectiveness(lineEffectiveness);
 
-            return new DashboardViewModel
+            // 4. Retourner le ViewModel complet
+            var dashboardViewModel = new DashboardViewModel
             {
                 Stations = stations,
                 TotalGum = totalGum,
                 TotalAwt = totalAwt,
                 PourcentageAWTvsGUM = pourcentage,
-                DonutColor = couleur,
-                EvaluationLabel = evaluation,
+                DonutColor = donutColor,
+                EvaluationLabel = evalAWTvsGUM,
 
-                // KPI 2
                 TotalManpower = totalManpower,
                 ManpowerNeeded = manpowerNeeded,
                 ManpowerAllocation = manpowerAllocation,
-                ManpowerColor = colorMP,
-                ManpowerEvaluation = evalMP,
-                TactTime = tactTime,
-                ConveyorSpeed = conveyorSpeed,
+                ManpowerColor = manpowerColor,
+                ManpowerEvaluation = manpowerEval,
 
-                // KPI 3
                 LineEffectiveness = lineEffectiveness,
-                LineEffectivenessColor = colorLE,
-                LineEffectivenessEvaluation = evalLE
+                LineEffectivenessColor = leColor,
+                LineEffectivenessEvaluation = leEval,
+                DashboardParams = new DashboardParamViewModel
+                 {
+                     TactTime = tactTime,
+                     ConveyorSpeed = conveyorSpeed,
+                     CycleTime = cycleTime,
+                     ActualOutput = actualOutput,
+                     WorkingTime = workingTime,
+                     TargetQuantity = targetQuantity
+                 },
             };
+            return dashboardViewModel;
         }
-        
 
-        private (double pourcentage, string couleur, string evaluation) EvaluerAwtVsGum(double totalAwt, double totalGum)
+        private (double, string, string) EvaluerAwtVsGum(double totalAwt, double totalGum)
         {
-            double pourcentage = (totalGum != 0)
-                ? Math.Round((totalAwt / totalGum) * 100, 2)
-                : 0;
-
-            string couleur;
-            string evaluation;
+            double pourcentage = (totalGum > 0) ? Math.Round((totalAwt / totalGum) * 100, 2) : 0;
 
             if (pourcentage < 90)
-            {
-                couleur = "rgba(255, 206, 86, 0.7)"; // Jaune
-                evaluation = "Bad";
-            }
+                return (pourcentage, "rgba(255, 206, 86, 0.7)", "Bad");
             else if (pourcentage < 100)
-            {
-                couleur = "rgba(75, 192, 192, 0.7)"; // Vert
-                evaluation = "Good";
-            }
+                return (pourcentage, "rgba(75, 192, 192, 0.7)", "Good");
             else
-            {
-                couleur = "rgba(255, 99, 132, 0.7)"; // Rouge
-                evaluation = "Bad";
-            }
-
-            return (pourcentage, couleur, evaluation);
+                return (pourcentage, "rgba(255, 99, 132, 0.7)", "Bad");
         }
 
-        private (string couleur, string evaluation) EvaluerManpowerAllocation(double pourcentage)
+        private (string, string) EvaluerManpowerAllocation(double pourcentage)
         {
             if (pourcentage < 90)
-                return ("rgba(255, 206, 86, 0.7)", "Bad"); // Jaune
+                return ("rgba(255, 206, 86, 0.7)", "Bad");
             else if (pourcentage <= 110)
-                return ("rgba(75, 192, 192, 0.7)", "Good"); // Vert
+                return ("rgba(75, 192, 192, 0.7)", "Good");
             else
-                return ("rgba(255, 99, 132, 0.7)", "Bad"); // Rouge
+                return ("rgba(255, 99, 132, 0.7)", "Bad");
         }
 
-        private (string couleur, string evaluation) EvaluerLineEffectiveness(double pourcentage)
+        private (string, string) EvaluerLineEffectiveness(double pourcentage)
         {
             if (pourcentage < 15)
-                return ("rgba(75, 192, 192, 0.7)", "Good"); // Vert
+                return ("rgba(75, 192, 192, 0.7)", "Good");
             else
-                return ("rgba(255, 99, 132, 0.7)", "Bad"); // Rouge
+                return ("rgba(255, 99, 132, 0.7)", "Bad");
         }
 
         private double Normalize(double value)
@@ -138,9 +126,10 @@ namespace Dashboard.Services
                 TotalAwt = 1,
                 PourcentageAWTvsGUM = 0,
                 DonutColor = "rgba(255, 99, 132, 0.7)",
-                EvaluationLabel = "Aucune station disponible"
+                EvaluationLabel = "Aucune station disponible",
+                Stations = new List<Station>()
             };
-}
+        }
     }
-}    
-   
+
+}

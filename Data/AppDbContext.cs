@@ -14,7 +14,7 @@ namespace Dashboard.Data
         //DbSet for Stations
         public DbSet<Station> Stations { get; set; }
         //DbSet for Lines
-        public DbSet<Line> Lines { get; set; }
+        public DbSet<DashboardParam> DashboardParams { get; set; }
     }
 
 }

@@ -3,7 +3,7 @@
 @using Dashboard.Controllers
 @using System.Security.Claims
 @{
-    ViewData["Title"] ="Dashboard-Home";
+    ViewData["Title"] ="";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -47,16 +47,16 @@
                 </table>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @User.Identity.Name
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <p>Profile</p>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <p class="dropdown-item">Username: @User.Identity.Name</p>
                             <p class="dropdown-item">Email: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</p>
                             <p class="dropdown-item">Role: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</p>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="@Url.Action("GetProfileAsync", "Auth")">Profile</a>
-                            <a class="dropdown-item" href="@Url.Action("ChangePasswordAsync", "Auth")">Change Password</a>
-                            <a class="dropdown-item" href="@Url.Action("LogoutAsync","Auth")">Logout</a>
+                            <a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")">Change Password</a>
+                            <a class="dropdown-item" href="@Url.Action("Logout","Auth")">Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -67,6 +67,8 @@
     <div class="sidebar d-flex flex-column">
         <a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home me-2"></i> Home</a>
         <a asp-controller="Station" asp-action="stations"><i class="fas fa-desktop"></i> Stations</a>
+        <a asp-controller="DashboardParam" asp-action="EditParametres" class="nav-link"><i class="fas fa-cogs me-2"></i> Dashboard Parameters</a>
+        
 
         @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin"))
         {
@@ -85,6 +87,10 @@
     <script src="~/js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>
-@RenderSection("Scripts", required: false)
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

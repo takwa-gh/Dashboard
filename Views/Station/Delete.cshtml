@@ -1,4 +1,4 @@
-﻿@model Dashboard.Models.Station
+﻿@model Dashboard.ViewModels.StationViewModel
 
 @{
     ViewData["Title"] = "Delete Station";
@@ -23,7 +23,6 @@
         <dd class="col-sm-10">@Model.PartNumber</dd>
     </dl>
     <form asp-action="DeleteConfirmed" asp-controller="Station" method="post" class="d-inline">
-        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="StationId" name="id"/>
 
         <button type="submit" class="btn btn-danger me-2">

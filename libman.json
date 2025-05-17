@@ -1,12 +1,33 @@
 {
   "version": "3.0",
-  "defaultProvider": "cdnjs",
+  "defaultProvider": "jsdelivr",
   "libraries": [
     {
       "library": "jquery@3.7.1",
       "destination": "wwwroot/lib/jquery",
       "files": [
-        "jquery.min.js"
+        "dist/jquery.min.js"
+      ]
+    },
+    {
+      "library": "chart.js@3.8.0",
+      "destination": "wwwroot/lib/chart.js",
+      "files": [
+        "dist/chart.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validation@1.19.5",
+      "destination": "wwwroot/lib/jquery-validation",
+      "files": [
+        "dist/jquery.validate.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@3.2.12",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive",
+      "files": [
+        "dist/jquery.validate.unobtrusive.min.js"
       ]
     }
   ]

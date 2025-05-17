@@ -25,7 +25,7 @@ namespace Dashboard.Services
                     Role = u.Role
                 }).ToListAsync();
         }
-        public async Task<UserViewModel?> GetByIdAsync(Guid id)
+        public async Task<UserViewModel?> GetByIdAsync(int id)
         {
             return await _context.Users
                 .Where(u => u.UserId == id)
@@ -41,7 +41,6 @@ namespace Dashboard.Services
         {
             var user = new User
             {
-                UserId = Guid.NewGuid(),
                 UserName = model.UserName,
                 Email = model.Email,
                 Role = model.Role,
@@ -52,7 +51,7 @@ namespace Dashboard.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<EditUserViewModel?> GetEditByIdAsync(Guid id)
+        public async Task<EditUserViewModel?> GetEditByIdAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return null;
@@ -84,7 +83,7 @@ namespace Dashboard.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return;

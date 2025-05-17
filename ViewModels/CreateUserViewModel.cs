@@ -5,18 +5,18 @@
     public class CreateUserViewModel
     {
         [Required]
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
-        public string Role { get; set; }
+        public required string Role { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public required string Password { get; set; }
     }
 
 }

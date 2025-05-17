@@ -1,28 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dashboard.ViewModels
+namespace Dashboard.Models
 {
-    public class CreateLineViewModel
+    public class DashboardParam
     {
-        [Required]
-        public string Name { get; set; }
+        public int Id { get; set; }
 
-        [Required]
+        // Attributs globaux utiles pour les KPIs
         public double TactTime { get; set; }
-
-        [Required]
         public double ConveyorSpeed { get; set; }
-
-        [Required]
         public double TargetQuantity { get; set; }
-
-        [Required]
         public double WorkingTime { get; set; }
-
-        [Required]
         public double ActualOutput { get; set; }
-
-        [Required]
         public double CycleTime { get; set; }
+
+        
+
+
     }
 }

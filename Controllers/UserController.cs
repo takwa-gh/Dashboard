@@ -12,8 +12,9 @@ namespace Dashboard.Controllers
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
+        // Injection de dépendance du service user
         private readonly IUserService _userService;
-
+        
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -43,7 +44,7 @@ namespace Dashboard.Controllers
         }
 
         // Formulaire d’édition
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(int id)
         {
             var model = await _userService.GetEditByIdAsync(id);
             if (model == null) return NotFound();
@@ -57,22 +58,22 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _userService.UpdateAsync(model);
-            return RedirectToAction(nameof(Users));
+            return RedirectToAction("Users");
         }
 
         // Confirmation de suppression
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
-            return View(user);
+            return View("Delete");
         }
 
         // Traitement de suppression
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _userService.DeleteAsync(id);
             return RedirectToAction("Users");

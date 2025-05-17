@@ -4,13 +4,15 @@
 @{
     ViewData["Title"] = "Sign Up";
     Layout = "_AuthLayout";
+    <link rel="stylesheet" href="~/css/adminlte.min.css" />
+    <link rel="stylesheet" href="~/css/auth.css" />
 }  
       <div class="auth-container">
           <div class="auth-form">
             <form asp-action="SignUp" method="post">
                 <div class="form-group">
                 <input asp-for="UserName" class="form-control" placeholder="UserName">
-                span class="fas fa-user"></span>
+                <span class="fas fa-user"></span>
                 <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
 
