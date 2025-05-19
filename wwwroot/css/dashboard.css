@@ -12,7 +12,7 @@
     top: 0;
     left: 0;
     height: 80%;
-    width: 120px;
+    width: 80px;
    
     padding-top: 340px;
     z-index: 1000;
@@ -28,7 +28,7 @@
     }
 
 .main-content {
-    margin-left: 250px;
+    margin-left: 100px;
     margin-top: 190px;
     padding: 10px; /* Ajout pour éviter le collage du contenu */
 }
@@ -68,18 +68,30 @@
         width: auto;
         display: block;
     }
-
-.canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-.row > div {
+/*.row > div {
     padding: 10px;
-}
+}*/
 
 .gauge-label {
     text-align: center;
     font-size: 1rem;
 }
 
-
+card {
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.card-body {
+    padding: 1px;
+    height:auto;
+}
+.gauge-canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+}

@@ -34,6 +34,7 @@ namespace Dashboard.ViewModels
         // Paramètres saisis manuellement ou enregistrés par un manager
 
         public DashboardParamViewModel DashboardParams { get; set; }
+      
 
 
     }

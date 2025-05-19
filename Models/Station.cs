@@ -18,6 +18,8 @@ namespace Dashboard.Models
         [ValidateNever]
         public  User User { get; set; }
 
-       
+        // Navigation properties
+        public ICollection<StationAWT> AWTEntries { get; set; } = new List<StationAWT>();
+        public ICollection<StationGUM> GUMEntries { get; set; } = new List<StationGUM>();
     }
 }

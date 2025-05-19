@@ -4,7 +4,9 @@
 @{
     ViewData["Title"] = "Dashboard - Home";
 }
-
+@section DashboardHeader {
+    <partial name="_DashboardHeader" model="Model.DashboardParams.DashboardHeader" />
+}
 <!-- CSS spécifique à ce dashboard -->
 <link rel="stylesheet" href="~/css/dashboard.css" />
 
@@ -13,43 +15,92 @@
 
         @if (Model.HasData)
         {
-            <!-- Ligne 1 : Trois jauges -->
+            <!-- Ligne 1 : jauges -->
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-lg-3">
                     <div class="card">
                         <div class="card-header">Manpower Allocation</div>
                         <div class="card-body">
-                            <canvas id="gauge1"></canvas>
+                            <canvas id="gauge1" class="gauge-canvas"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-lg-3">
                     <div class="card">
                         <div class="card-header">AWT vs GUM</div>
                         <div class="card-body">
-                            <canvas id="gauge2"></canvas>
+                            <canvas id="gauge2" class="gauge-canvas"></canvas>
 
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-lg-3">
                     <div class="card">
                         <div class="card-header">Line Effectiveness</div>
                         <div class="card-body">
-                            <canvas id="gauge3"></canvas>
+                            <canvas id="gauge3" class="gauge-canvas"></canvas>
 
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-header">GUM vs AWT Line Evaluation</div>
+                        <div class="card-body"> 
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Project / Family</th>
+                                        <td>@Model.DashboardParams.DashboardHeader.Project / @Model.DashboardParams.DashboardHeader.Family</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Working time</th>
+                                        <td>@Model.DashboardParams.DashboardInfo.WorkingTime</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Actual no. of operators</th>
+                                        <td>
+                                            <div>Direct: @Model.Stations.Sum(s => s.DirectOperator)</div>
+                                            <div>Indirect: @Model.Stations.Sum(s => s.IndirectOperator)</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Conveyor speed (min)</th>
+                                        <td>@Model.DashboardParams.DashboardInfo.ConveyorSpeed</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tact time (min)</th>
+                                        <td>@Model.DashboardParams.DashboardInfo.TactTime</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Actual output (shift)</th>
+                                        <td>@Model.DashboardParams.DashboardInfo.ActualOutput</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Target quantity</th>
+                                        <td>@Model.DashboardParams.DashboardInfo.TargetQuantity</td>
+                                    <tr>
+                                        <th>GUM (min)</th>
+                                        <td>@Model.TotalGum</td>
+                                    </tr>
+                                    <tr>
+                                        <th>AWT (min)</th>
+                                        <td>@Model.TotalAwt</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- Ligne 2: Bar Chart -->
             <div class="row mt-4">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">GUM vs AWT Breakdown</div>
                         <div class="card-body">
-                            <canvas id="barChart" height="200"></canvas>
+                            <canvas id="barChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
@@ -68,31 +119,29 @@
 @section Scripts {
     <script src="~/lib/gauge/gauge.min.js"></script>
     <script src="~/lib/chart.js/dist/chart.min.js"></script>
+    
 
-    <script>
-        const modelData = @Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        }));
-        
-        window.dashboardData = modelData;
+   <script>
+    const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    })));
 
-        window.chartData = {
-            labels: modelData.stations.map(s => s.stationName),
-            gumData: modelData.stations.map(s => s.gumValue),
-            awtData: modelData.stations.map(s => s.awtValue),
-            tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.tactTime),
-            conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.conveyorSpeed),
-            cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.cycleTime),
+    console.log("modelData:", modelData);
 
+    window.dashboardData = modelData;
 
+    window.chartData = {
+        labels: modelData.stations.map(s => s.stationName),
+        gumData: modelData.stations.map(s => s.gumValue),
+        awtData: modelData.stations.map(s => s.awtValue),
+        maxAwtData: modelData.stations.map(s => s.awtValue),
+        minAwtData: modelData.stations.map(s => s.awtValue),
+        tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.tactTime),
+        conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.conveyorSpeed),
+        cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.cycleTime)
+    };
+</script>
 
-        };
-    </script>
-    <script src="~/js/dashboard.js"></script>    
+    <script src="~/js/dashboard.js"></script>
 }
-
-
-
-
-

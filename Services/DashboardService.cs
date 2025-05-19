@@ -31,10 +31,15 @@ namespace Dashboard.Services
             double actualOutput = Normalize(latestParams?.ActualOutput ?? 0);
             double workingTime = Normalize(latestParams?.WorkingTime ?? 0);
             double targetQuantity = Normalize(latestParams?.TargetQuantity ?? 0);
-
+            string plant = latestParams?.Plant ?? string.Empty;
+            string project = latestParams?.Project ?? string.Empty;
+            string family = latestParams?.Family ?? string.Empty;
+            string controlNumber = latestParams?.ControlNumber ?? string.Empty;
+            
             // 3. Calculs des indicateurs
             double totalGum = Normalize(stations.Sum(s => s.GumValue));
             double totalAwt = Normalize(stations.Sum(s => s.AwtValue));
+
             double totalManpower = Normalize(stations.Sum(s => s.DirectOperator + s.IndirectOperator));
 
             var (pourcentage, donutColor, evalAWTvsGUM) = EvaluerAwtVsGum(totalAwt, totalGum);
@@ -70,15 +75,25 @@ namespace Dashboard.Services
                 LineEffectiveness = lineEffectiveness,
                 LineEffectivenessColor = leColor,
                 LineEffectivenessEvaluation = leEval,
+
                 DashboardParams = new DashboardParamViewModel
-                 {
-                     TactTime = tactTime,
-                     ConveyorSpeed = conveyorSpeed,
-                     CycleTime = cycleTime,
-                     ActualOutput = actualOutput,
-                     WorkingTime = workingTime,
-                     TargetQuantity = targetQuantity
-                 },
+                {
+                    DashboardInfo = new DashboardInfoViewModel
+                    {
+                        TactTime = tactTime,
+                        ConveyorSpeed = conveyorSpeed,
+                        CycleTime = cycleTime,
+                        ActualOutput = actualOutput,
+                        WorkingTime = workingTime,
+                        TargetQuantity = targetQuantity },
+                    DashboardHeader = new DashboardHeaderViewModel 
+                    { 
+                    Plant = plant,
+                    Project = project,
+                    Family = family,
+                    ControlNumber = controlNumber }
+
+                },
             };
             return dashboardViewModel;
         }

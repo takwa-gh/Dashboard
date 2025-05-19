@@ -2,6 +2,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @using Dashboard.Controllers
 @using System.Security.Claims
+@using Dashboard.ViewModels
 @{
     ViewData["Title"] ="";
 }
@@ -16,58 +17,15 @@
 </head>
 <body>
     <!-- Top Navigation avec grid personnalisé -->
-    <div class="container-fluid bg- py-3 border-bottom" style="background:white; position: fixed; top: 0; left: 0px; right: 0; z-index: 999;">
-        <div class="row align-items-center">
+    @RenderSection("DashboardHeader", required: false)
 
-            <!-- Colonne gauche : Logo + Infos -->
-            <div class="col-md-4 text-start ps-4">
-                <img src="~/images/yazaki.png" alt="Logo" style="height: 20px;" class="mb-2" />
-                <table class="table table-bordered table-sm mb-0">
-                    <tbody>
-                        <tr><td><strong>Plant</strong></td><td>YMK</td></tr>
-                        <tr><td><strong>Project</strong></td><td>CDPO</td></tr>
-                        <tr><td><strong>Family</strong></td><td>IP</td></tr>
-                    </tbody>
-                </table>
-            </div>
 
-            <!-- Colonne centre : Titre -->
-            <div class="col-md-4 text-center">
-                <h2 class="mb-0 fw-bold">GUM vs AWT Dashboard</h2>
-            </div>
 
-            <!-- Colonne droite : Infos Control + Profil utilisateur -->
-            <div class="col-md-4 text-end pe-4">
-                <table class="table table-bordered table-sm mb-0">
-                    <tbody>
-                        <tr><td><strong>Control N°</strong></td><td colspan="2">EA-MF-WH-P-133-F2</td></tr>
-                        <tr><td>Prepared</td><td>Checked</td> <td>Approved</td></tr>
-                        <tr><td></td><td></td><td></td></tr>
-                    </tbody>
-                </table>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <p>Profile</p>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <p class="dropdown-item">Username: @User.Identity.Name</p>
-                            <p class="dropdown-item">Email: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</p>
-                            <p class="dropdown-item">Role: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</p>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")">Change Password</a>
-                            <a class="dropdown-item" href="@Url.Action("Logout","Auth")">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
     <!-- Sidebar -->
     <div class="sidebar d-flex flex-column">
         <a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home me-2"></i> Home</a>
         <a asp-controller="Station" asp-action="stations"><i class="fas fa-desktop"></i> Stations</a>
-        <a asp-controller="DashboardParam" asp-action="EditParametres" class="nav-link"><i class="fas fa-cogs me-2"></i> Dashboard Parameters</a>
+        <a asp-controller="DashboardParam" asp-action="EditParams" class="nav-link"><i class="fas fa-cogs me-2"></i> Dashboard Parameters</a>
         
 
         @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin"))

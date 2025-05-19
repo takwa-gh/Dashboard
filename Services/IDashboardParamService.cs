@@ -4,8 +4,10 @@ namespace Dashboard.Services
 {
     public interface IDashboardParamService
     {
-        DashboardParamViewModel Get();
-        void SaveOrUpdate(DashboardParamViewModel model);
+        Task<DashboardParamViewModel?> GetDashboardParamsAsync();
+
+        Task UpdateDashboardHeaderAsync(DashboardHeaderViewModel model);  // Pour Admin
+        Task UpdateDashboardInfoAsync(DashboardInfoViewModel model);    // Pour Manager
     }
 
 

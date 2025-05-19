@@ -2,10 +2,10 @@
 using Dashboard.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Dashboard.Controllers
 {
-    [Authorize(Roles = "Manager,Admin")]
     public class DashboardParamController : Controller
     {
         private readonly IDashboardParamService _service;
@@ -14,40 +14,36 @@ namespace Dashboard.Controllers
         {
             _service = service;
         }
-        [HttpGet]
-        public IActionResult EditParametres()
-        {
-            var model = _service.Get();
 
-            // Si l'utilisateur est admin → rendre la vue en lecture seule
-            if (User.IsInRole("Admin"))
-            {
-                ViewBag.IsReadOnly = true;
-            }
-            else if (User.IsInRole("Manager"))
-            {
-                ViewBag.IsReadOnly = false;
-            }
-            
-                return View(model);
+        [HttpGet]
+        public async Task<IActionResult> EditParams()
+        {
+            var model = await _service.GetDashboardParamsAsync();
+            return View(model);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Manager")] // Seuls les managers peuvent modifier
-        public IActionResult EditParametres(DashboardParamViewModel model)
+        public async Task<IActionResult> EditParams(DashboardParamViewModel model)
         {
-            if (User.IsInRole("Admin"))
+            if (!ModelState.IsValid)
             {
-                return Forbid();
-            }
-            if (ModelState.IsValid)
-            {
-                _service.SaveOrUpdate(model);
-                return RedirectToAction("Index", "Dashboard"); // Redirection après sauvegarde
+                // En cas d'erreur de validation, on revient à la vue avec les erreurs affichées
+                return View(model);
             }
 
-            ViewBag.IsReadOnly = false; // Réaffiche le formulaire avec les erreurs
-            return View(model);
+            if (User.IsInRole("Admin"))
+            {
+                await _service.UpdateDashboardHeaderAsync(model.DashboardHeader);
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                await _service.UpdateDashboardInfoAsync(model.DashboardInfo);
+            }
+
+            TempData["Success"] = "Les paramètres ont été mis à jour avec succès.";
+            return RedirectToAction("Index", "Dashboard"); 
         }
     }
+            
 }
+

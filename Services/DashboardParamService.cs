@@ -17,24 +17,38 @@ namespace Dashboard.Services
             _context = context;
         }
 
-        public DashboardParamViewModel Get()
+        public async Task<DashboardParamViewModel> GetDashboardParamsAsync()
         {
-            var param = _context.DashboardParams.FirstOrDefault();
-            if (param == null) return new DashboardParamViewModel();
+            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            if (param == null) return new DashboardParamViewModel
+            {
+                DashboardHeader = new DashboardHeaderViewModel(),
+                DashboardInfo = new DashboardInfoViewModel()
+            };
+                
 
             return new DashboardParamViewModel
             {
-                ConveyorSpeed = param.ConveyorSpeed,
-                TactTime = param.TactTime,
-                TargetQuantity = param.TargetQuantity,
-                WorkingTime = param.WorkingTime,
-                ActualOutput = param.ActualOutput,
-                CycleTime = param.CycleTime
-
+                DashboardHeader = new DashboardHeaderViewModel
+                {
+                    Plant = param.Plant,
+                    Project = param.Project,
+                    Family = param.Family,
+                    ControlNumber = param.ControlNumber
+                },
+                DashboardInfo = new DashboardInfoViewModel
+                {
+                    TactTime = param.TactTime,
+                    ConveyorSpeed = param.ConveyorSpeed,
+                    TargetQuantity = param.TargetQuantity,
+                    WorkingTime = param.WorkingTime,
+                    ActualOutput = param.ActualOutput,
+                    CycleTime = param.CycleTime
+                },
             };
         }
 
-        public void SaveOrUpdate(DashboardParamViewModel model)
+        public async Task UpdateDashboardInfoAsync(DashboardInfoViewModel model)
         {
             var param = _context.DashboardParams.FirstOrDefault();
 
@@ -46,28 +60,27 @@ namespace Dashboard.Services
                 param.TargetQuantity = model.TargetQuantity;
                 param.WorkingTime = model.WorkingTime;
                 param.CycleTime = model.CycleTime;
-
-
             }
-            else
-            {
-                _context.DashboardParams.Add(new DashboardParam
-                {
-                    ConveyorSpeed = model.ConveyorSpeed,
-                    TactTime = model.TactTime,
-                    ActualOutput = model.ActualOutput,
-                    TargetQuantity = model.TargetQuantity,
-                    WorkingTime = model.WorkingTime,
-                    CycleTime = model.CycleTime
-
-                });
-            }
-
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-    }
+        public async Task UpdateDashboardHeaderAsync(DashboardHeaderViewModel model)
+        {
+            var entity = await _context.DashboardParams.FirstOrDefaultAsync();
+            if (entity == null) return;
 
+            entity.Plant = model.Plant;
+            entity.Project = model.Project;
+            entity.Family = model.Family;
+            entity.ControlNumber = model.ControlNumber;
+
+            await _context.SaveChangesAsync();
+        }
+
+    }
 }
+    
+
+
 
 
 

@@ -14,18 +14,15 @@ namespace Dashboard.Controllers
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
-        private readonly IHeaderService _headerService;
-
-        public DashboardController(IDashboardService dashboardService, IHeaderService headerService)
+        
+        public DashboardController(IDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
-            _headerService = headerService;
+            
         }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            //injection d'entete
-            ViewBag.Header = _headerService.GetHeaderData();
             //recuperation des kpis
             var model = await _dashboardService.GetDashboardDataAsync();
             if (!model.HasData)

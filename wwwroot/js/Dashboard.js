@@ -101,15 +101,18 @@ function renderBarChart() {
     if (!canvas) return;
 
     const { labels, gumData, awtData } = window.chartData;
-    // Définir dynamiquement la largeur du canvas selon le nombre de labels
     const minWidthPerStation = 80; // pixels par station
     const totalWidth = labels.length * minWidthPerStation;
     canvas.width = totalWidth;
 
-    // Préparer les points pour scatter chart
-    const scatterPoints = labels.map((label, index) => ({
+    const flectuationRateAWTData = window.chartData.maxAwtData.map((max, i) => {
+        const min = window.chartData.minAwtData[i];
+        return (max - min) * 100; // en pourcentage
+    });
+
+    const flectuationPoints = window.chartData.labels.map((label, i) => ({
         x: label,
-        y: awtData[index] // ou maxAwtData[index], c’est la même chose ici
+        y: flectuationRateAWTData[i]
     }));
 
     new Chart(canvas, {
@@ -120,36 +123,35 @@ function renderBarChart() {
                 {
                     label: 'GUM',
                     data: gumData,
-                    backgroundColor: '#999999', // gris
-                    barThickness: 13,
+                    backgroundColor: '#999999',
+                    barThickness: 10,
+                    pointStyle:'rect',
                     order: 1
-
                 },
                 {
                     label: 'AWT',
                     data: awtData,
-                    backgroundColor: '#66b2ff', // bleu
-                    barThickness: 10,
+                    backgroundColor: '#66b2ff',
+                    barThickness: 8,
+                    pointStyle: 'rect',
                     order: 2
-
                 },
-
                 {
                     label: 'Max AWT',
                     type: 'scatter',
-                    data: scatterPoints,
-                    backgroundColor: 'red',
-                    pointRadius: 4,
+                    data: window.chartData.maxAwtData,
+                    backgroundColor: 'green',
+                    pointRadius: 3,
                     pointStyle: 'circle',
                     showLine: false,
-                    ordre: 4
+                    order: 4
                 },
                 {
                     label: 'Min AWT',
                     type: 'scatter',
-                    data: scatterPoints,
-                    backgroundColor: 'green',
-                    pointRadius: 5,
+                    data: window.chartData.minAwtData,
+                    backgroundColor: 'red',
+                    pointRadius: 4,
                     pointStyle: 'circle',
                     showLine: false,
                     order: 3
@@ -157,35 +159,52 @@ function renderBarChart() {
                 {
                     label: 'Tact Time',
                     type: 'line',
-                    data: window.chartData.tactTimeData, 
-                    borderColor:'yellow',
-                    borderWidth: 1,
+                    data: window.chartData.tactTimeData,
+                    borderColor: 'green',
+                    borderWidth: 2,
+                    borderDash: [],
                     fill: false,
-                    tension: 4,
+                    tension: 0,
                     pointRadius: 0,
-                    order:5
+                    pointStyle: 'line',
+                    order: 5
                 },
                 {
                     label: 'Conveyor Speed',
                     type: 'line',
-                    data: window.chartData.conveyorSpeedData, 
-                    borderColor:'black',
-                    borderWidth: 1,
+                    data: window.chartData.conveyorSpeedData,
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
                     fill: false,
-                    tension:4,
+                    tension: 0,
                     pointRadius: 0,
-                    order:6
+                    pointStyle:'line',
+                    order: 6
                 },
                 {
                     label: 'Cycle Time',
                     type: 'line',
-                    data: window.chartData.cycleTimeData, 
-                    borderColor:'orange',
-                    borderWidth: 1,
+                    data: window.chartData.cycleTimeData,
+                    borderColor: 'orange',
+                    borderWidth: 2,
+                    borderDash: [10, 5],
                     fill: false,
-                    tension: 4,
+                    tension: 0,
                     pointRadius: 0,
-                    order:7
+                    pointStyle:'line',
+                    order: 7
+                },
+                {
+                    label: 'Flectuation Rate AWT',
+                    type: 'scatter',
+                    data: flectuationPoints,
+                    backgroundColor: 'black',
+                    pointRadius: 5,
+                    pointStyle: 'triangle',
+                    showLine: false,
+                    yAxisID: 'yRight',
+                    order: 8
                 }
             ]
         },
@@ -197,29 +216,49 @@ function renderBarChart() {
                     categoryPercentage: 0.3,
                     barPercentage: 0.4,
                     ticks: {
-                        autoSkip: false, // ne saute pas les noms
+                        autoSkip: false,
                         maxRotation: 50,
                         minRotation: 50,
                         font: {
                             size: 12
                         }
-
                     }
-                },                   
+                },
                 y: {
-                    beginAtZero: true 
+                    beginAtZero: true
+                },
+                yRight: {
+                    position: 'right',
+                    beginAtZero: true,
+                    max :100,
+
+                    grid: {
+                        drawOnChartArea: false // évite les lignes en double
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true
+                       
+                    }
                 }
             }
-        },
-
+        }
     });
-}
-
-
+ }
+ 
 // === Lancement ===
 if (checkDashboardData()) {
-    renderGaugeWithGraduation('gauge1', dashboardData.manpowerAllocation, 'Manpower Allocation');
-    renderGaugeWithGraduation('gauge2', dashboardData.pourcentageAWTvsGUM, 'AWT vs GUM');
-    renderGaugeWithGraduation('gauge3', dashboardData.lineEffectiveness, 'Line Effectiveness');
-    renderBarChart();
+        renderGaugeWithGraduation('gauge1', dashboardData.manpowerAllocation, 'Manpower Allocation');
+        renderGaugeWithGraduation('gauge2', dashboardData.pourcentageAWTvsGUM, 'AWT vs GUM');
+        renderGaugeWithGraduation('gauge3', dashboardData.lineEffectiveness, 'Line Effectiveness');
+        renderBarChart();
 }
+
