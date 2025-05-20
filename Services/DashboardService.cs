@@ -13,6 +13,29 @@ namespace Dashboard.Services
         {
             _context = context;
         }
+        public DashboardHeaderViewModel GetDashboardHeader()
+        {
+            var latestParams = _context.DashboardParams
+                .OrderByDescending(b => b.Id)
+                .FirstOrDefault();
+            if (latestParams == null)
+            {
+                return new DashboardHeaderViewModel
+                {
+                    Plant = string.Empty,
+                    Project = string.Empty,
+                    Family = string.Empty,
+                    ControlNumber = string.Empty
+                };
+            }
+            return new DashboardHeaderViewModel
+            {
+                Plant = latestParams.Plant,
+                Project = latestParams.Project,
+                Family = latestParams.Family,
+                ControlNumber = latestParams.ControlNumber
+            };
+        }
 
         public async Task<DashboardViewModel> GetDashboardDataAsync()
         {
@@ -35,10 +58,10 @@ namespace Dashboard.Services
             string project = latestParams?.Project ?? string.Empty;
             string family = latestParams?.Family ?? string.Empty;
             string controlNumber = latestParams?.ControlNumber ?? string.Empty;
-            
+
             // 3. Calculs des indicateurs
-            double totalGum = Normalize(stations.Sum(s => s.GumValue));
-            double totalAwt = Normalize(stations.Sum(s => s.AwtValue));
+            var totalGum = stations.Sum(s => s.AverageGumValue); 
+            var totalAwt = stations.Sum(s => s.AverageAwtValue);
 
             double totalManpower = Normalize(stations.Sum(s => s.DirectOperator + s.IndirectOperator));
 
@@ -146,5 +169,4 @@ namespace Dashboard.Services
             };
         }
     }
-
 }

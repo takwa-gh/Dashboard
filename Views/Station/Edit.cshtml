@@ -10,7 +10,6 @@
 
     <form asp-action="Edit" method="post">
         <input type="hidden" asp-for="StationId" />
-
         <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
         <div class="row">
@@ -18,18 +17,6 @@
                 <label asp-for="StationName" class="form-label"></label>
                 <input asp-for="StationName" class="form-control" />
                 <span asp-validation-for="StationName" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label asp-for="GumValue" class="form-label"></label>
-                <input asp-for="GumValue" class="form-control" />
-                <span asp-validation-for="GumValue" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label asp-for="AwtValue" class="form-label"></label>
-                <input asp-for="AwtValue" class="form-control" />
-                <span asp-validation-for="AwtValue" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 mb-3">
@@ -56,10 +43,9 @@
                 <i class="fas fa-save"></i> Save Changes
             </button>
             <a asp-action="Stations" class="btn btn-outline-secondary">
-                <i class="fas fa-times"></i> Cancel 
+                <i class="fas fa-times"></i> Cancel
             </a>
         </div>
-
     </form>
 </div>
 

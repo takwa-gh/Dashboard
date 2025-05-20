@@ -4,9 +4,6 @@
 @{
     ViewData["Title"] = "Dashboard - Home";
 }
-@section DashboardHeader {
-    <partial name="_DashboardHeader" model="Model.DashboardParams.DashboardHeader" />
-}
 <!-- CSS spécifique à ce dashboard -->
 <link rel="stylesheet" href="~/css/dashboard.css" />
 
@@ -51,42 +48,37 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th>Project / Family</th>
-                                        <td>@Model.DashboardParams.DashboardHeader.Project / @Model.DashboardParams.DashboardHeader.Family</td>
-                                    </tr>
-                                    <tr>
                                         <th>Working time</th>
                                         <td>@Model.DashboardParams.DashboardInfo.WorkingTime</td>
                                     </tr>
                                     <tr>
-                                        <th>Actual no. of operators</th>
+                                        <th >No. of Op.</th>
                                         <td>
-                                            <div>Direct: @Model.Stations.Sum(s => s.DirectOperator)</div>
-                                            <div>Indirect: @Model.Stations.Sum(s => s.IndirectOperator)</div>
+                                              Direct: @Model.Stations.Sum(s => s.DirectOperator)
+
+                                              Indirect: @Model.Stations.Sum(s => s.IndirectOperator)
                                         </td>
+                                       
                                     </tr>
                                     <tr>
-                                        <th>Conveyor speed (min)</th>
+                                        <th>CS (min)</th>
                                         <td>@Model.DashboardParams.DashboardInfo.ConveyorSpeed</td>
                                     </tr>
                                     <tr>
-                                        <th>Tact time (min)</th>
+                                        <th>TT (min)</th>
                                         <td>@Model.DashboardParams.DashboardInfo.TactTime</td>
                                     </tr>
                                     <tr>
-                                        <th>Actual output (shift)</th>
+                                        <th>Actual output</th>
                                         <td>@Model.DashboardParams.DashboardInfo.ActualOutput</td>
                                     </tr>
                                     <tr>
-                                        <th>Target quantity</th>
-                                        <td>@Model.DashboardParams.DashboardInfo.TargetQuantity</td>
-                                    <tr>
                                         <th>GUM (min)</th>
-                                        <td>@Model.TotalGum</td>
+                                        <td>@Model.TotalGum.ToString("F2")</td>
                                     </tr>
                                     <tr>
                                         <th>AWT (min)</th>
-                                        <td>@Model.TotalAwt</td>
+                                        <td>@Model.TotalAwt.ToString("F2")</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -115,33 +107,39 @@
 
     </div>
 </section>
-
 @section Scripts {
     <script src="~/lib/gauge/gauge.min.js"></script>
     <script src="~/lib/chart.js/dist/chart.min.js"></script>
-    
 
-   <script>
-    const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    })));
+    <script>
+        const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
+        {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        })));
 
     console.log("modelData:", modelData);
 
-    window.dashboardData = modelData;
+        window.dashboardData = modelData;
 
-    window.chartData = {
-        labels: modelData.stations.map(s => s.stationName),
-        gumData: modelData.stations.map(s => s.gumValue),
-        awtData: modelData.stations.map(s => s.awtValue),
-        maxAwtData: modelData.stations.map(s => s.awtValue),
-        minAwtData: modelData.stations.map(s => s.awtValue),
-        tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.tactTime),
-        conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.conveyorSpeed),
-        cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.cycleTime)
-    };
-</script>
+        window.chartData = {
+            labels: modelData.stations.map(s => s.stationName),
+
+            // GUM
+            gumAverageData: modelData.stations.map(s => parseFloat(s.averageGumValue).toFixed(2)),
+            gumMaxData: modelData.stations.map(s => parseFloat(s.maxGumValue).toFixed(2)),
+            gumMinData: modelData.stations.map(s => parseFloat(s.minGumValue).toFixed(2)),
+
+            // AWT
+            awtAverageData: modelData.stations.map(s => parseFloat(s.averageAwtValue).toFixed(2)),
+            awtMaxData: modelData.stations.map(s => parseFloat(s.maxAwtValue).toFixed(2)),
+            awtMinData: modelData.stations.map(s => parseFloat(s.minAwtValue).toFixed(2)),
+
+            // Paramètres globaux
+            tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.tactTime),
+            conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.conveyorSpeed),
+            cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.cycleTime)
+        };
+    </script>
 
     <script src="~/js/dashboard.js"></script>
 }

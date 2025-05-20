@@ -14,7 +14,7 @@ namespace Dashboard.Controllers
             _stationService = stationService;
         }
 
-        public async Task<IActionResult> Stations(string userName)
+        public async Task<IActionResult> Stations(string? userName)
         {
             var userIdStr = User.FindFirst("UserId")?.Value;
             if (!int.TryParse(userIdStr, out int userId))
@@ -58,12 +58,20 @@ namespace Dashboard.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateStation(CreateStationViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var flag = await _stationService.CreateStationAsync(model, model.UserId);
+            var userIdStr = User.FindFirstValue("UserId");
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                TempData["ErrorMessage"] = "Session expirée.";
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var flag = await _stationService.CreateStationAsync(model, userId);
             if (!flag)
             {
                 TempData["ErrorMessage"] = "Erreur lors de la création.";
@@ -71,7 +79,7 @@ namespace Dashboard.Controllers
             }
 
             TempData["SuccessMessage"] = "Station créée avec succès.";
-            return RedirectToAction("Stations");
+            return RedirectToAction(nameof(Stations));
         }
 
         [HttpGet]
@@ -83,12 +91,10 @@ namespace Dashboard.Controllers
                 TempData["ErrorMessage"] = "Session expirée.";
                 return RedirectToAction("Login", "Auth");
             }
-            var stations = await _stationService.GetStationsForManagerAsync(userId); // à adapter si nécessaire
 
-            var station = stations
-                .FirstOrDefault(s => s.StationId == id);
-
-            if (station== null)
+            var stations = await _stationService.GetStationsForManagerAsync(userId);
+            var station = stations.FirstOrDefault(s => s.StationId == id);
+            if (station == null)
             {
                 TempData["ErrorMessage"] = "Station introuvable.";
                 return RedirectToAction(nameof(Stations));
@@ -98,12 +104,13 @@ namespace Dashboard.Controllers
             {
                 StationId = station.StationId,
                 StationName = station.StationName,
-                PartNumber=station.PartNumber,
+                PartNumber = station.PartNumber,
                 DirectOperator = (double)station.DirectOperator,
                 IndirectOperator = (double)station.IndirectOperator,
-                AwtValue = (double)station.AwtValue,
-                GumValue = (double)station.GumValue
+                NewAwtValue = (double)station.AwtValue,
+                NewGumValue = (double)station.GumValue
             };
+
             return View(model);
         }
 
@@ -147,7 +154,9 @@ namespace Dashboard.Controllers
                 TempData["ErrorMessage"] = "Session expirée.";
                 return RedirectToAction("Login", "Auth");
             }
-            var station = (await _stationService.GetStationsForManagerAsync(userId)).FirstOrDefault(s => s.StationId == id);
+
+            var stations = await _stationService.GetStationsForManagerAsync(userId);
+            var station = stations.FirstOrDefault(s => s.StationId == id);
             if (station == null)
             {
                 TempData["ErrorMessage"] = "Station introuvable.";
@@ -178,5 +187,35 @@ namespace Dashboard.Controllers
             TempData["SuccessMessage"] = "Station supprimée avec succès.";
             return RedirectToAction(nameof(Stations));
         }
+        [HttpGet]
+        public IActionResult AddGUM(int id)
+        {
+            return View(new AddGumViewModel { StationId = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGUM(AddGumViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            await _stationService.AddGUMEntryAsync(model.StationId, model.Value);
+            return RedirectToAction("Stations");
+        }
+
+        [HttpGet]
+        public IActionResult AddAWT(int id)
+        {
+            return View(new AddAwtViewModel { StationId = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAWT(AddAwtViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            await _stationService.AddAWTEntryAsync(model.StationId, model.Value);
+            return RedirectToAction("Stations");
+        }
     }
+
 }

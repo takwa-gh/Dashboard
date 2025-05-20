@@ -1,0 +1,20 @@
+﻿@model Dashboard.ViewModels.AddAwtViewModel
+
+@{
+    ViewData["Title"] = "Add AWT value";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="AddAWT" method="post">
+    <input asp-for="StationId" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="Value" class="control-label"> AWT value</label>
+        <input asp-for="Value" class="form-control" />
+        <span asp-validation-for="Value" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Add</button>
+    <a asp-action="Stations" class="btn btn-secondary mt-2">Back</a>
+</form>

@@ -28,7 +28,7 @@
     }
 
 .main-content {
-    margin-left: 100px;
+    margin-left: 160px;
     margin-top: 190px;
     padding: 10px; /* Ajout pour éviter le collage du contenu */
 }
@@ -68,9 +68,6 @@
         width: auto;
         display: block;
     }
-/*.row > div {
-    padding: 10px;
-}*/
 
 .gauge-label {
     text-align: center;
@@ -78,16 +75,17 @@
 }
 
 card {
-    height: 50px;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 .card-body {
-    padding: 1px;
+    padding: 3px;
     height:auto;
 }
+
 .gauge-canvas {
     width: 100% !important;
     height: auto !important;

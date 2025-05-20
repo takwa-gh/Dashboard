@@ -16,8 +16,7 @@
     <link rel="stylesheet" href="~/css/dashboard.css" />
 </head>
 <body>
-    <!-- Top Navigation avec grid personnalisé -->
-    @RenderSection("DashboardHeader", required: false)
+    @await Component.InvokeAsync("DashboardHeader")
 
 
 

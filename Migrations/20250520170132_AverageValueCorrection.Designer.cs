@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dashboard.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250519092316_AddStationAWTAndGUMEntries")]
-    partial class AddStationAWTAndGUMEntries
+    [Migration("20250520170132_AverageValueCorrection")]
+    partial class AverageValueCorrection
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,12 @@ namespace Dashboard.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StationId"));
 
+                    b.Property<double>("AverageAwtValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AverageGumValue")
+                        .HasColumnType("float");
+
                     b.Property<double>("AwtValue")
                         .HasColumnType("float");
 
@@ -86,6 +92,18 @@ namespace Dashboard.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("IndirectOperator")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxAwtValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaxGumValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinAwtValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinGumValue")
                         .HasColumnType("float");
 
                     b.Property<string>("PartNumber")

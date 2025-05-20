@@ -4,6 +4,7 @@ using Dashboard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dashboard.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250519095021_AddStationAWTAndGUMEntries")]
+    partial class AddStationAWTAndGUMEntries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,10 +76,10 @@ namespace Dashboard.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StationId"));
 
-                    b.Property<double>("AverageAwtValue")
+                    b.Property<double>("AvergeAwtValue")
                         .HasColumnType("float");
 
-                    b.Property<double>("AverageGumValue")
+                    b.Property<double>("AvergeGumValue")
                         .HasColumnType("float");
 
                     b.Property<double>("AwtValue")

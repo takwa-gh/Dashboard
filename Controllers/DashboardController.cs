@@ -1,12 +1,9 @@
-﻿using Dashboard.Data;
-using Dashboard.Models;
-using Dashboard.Services;
-using Dashboard.ViewModels;
+﻿using Dashboard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+
 
 namespace Dashboard.Controllers
 {
@@ -14,16 +11,21 @@ namespace Dashboard.Controllers
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
-        
+
         public DashboardController(IDashboardService dashboardService)
         {
             _dashboardService = dashboardService;
-            
         }
+
+        public IActionResult DashboardHeader()
+        {
+            var model = _dashboardService.GetDashboardHeader();
+            return View(model);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            //recuperation des kpis
             var model = await _dashboardService.GetDashboardDataAsync();
             if (!model.HasData)
             {
@@ -33,6 +35,3 @@ namespace Dashboard.Controllers
         }
     }
 }
-
-   
-

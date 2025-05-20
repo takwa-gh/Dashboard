@@ -9,8 +9,10 @@ namespace Dashboard.ViewModels
 
         [Required]
         public string StationName { get; set; } = string.Empty;
-        public double GumValue { get; set; }
-        public double AwtValue { get; set; }
+        [Display(Name = "Add GUM Value")]
+        public double NewGumValue { get; set; }
+        [Display(Name = "Add AWT Value")]
+        public double NewAwtValue { get; set; }
         
         public string PartNumber { get; set; } = string.Empty;
         public double DirectOperator { get; set; }

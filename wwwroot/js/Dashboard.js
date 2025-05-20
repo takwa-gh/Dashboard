@@ -100,13 +100,13 @@ function renderBarChart() {
     const canvas = document.getElementById('barChart');
     if (!canvas) return;
 
-    const { labels, gumData, awtData } = window.chartData;
+    const { labels, gumAverageData, awtAverageData } = window.chartData;
     const minWidthPerStation = 80; // pixels par station
     const totalWidth = labels.length * minWidthPerStation;
     canvas.width = totalWidth;
 
-    const flectuationRateAWTData = window.chartData.maxAwtData.map((max, i) => {
-        const min = window.chartData.minAwtData[i];
+    const flectuationRateAWTData = window.chartData.awtMaxData.map((max, i) => {
+        const min = window.chartData.awtMinData?.[i] ?? 0;
         return (max - min) * 100; // en pourcentage
     });
 
@@ -121,16 +121,16 @@ function renderBarChart() {
             labels: labels,
             datasets: [
                 {
-                    label: 'GUM',
-                    data: gumData,
+                    label: 'AVG GUM',
+                    data: gumAverageData,
                     backgroundColor: '#999999',
                     barThickness: 10,
                     pointStyle:'rect',
                     order: 1
                 },
                 {
-                    label: 'AWT',
-                    data: awtData,
+                    label: 'AVG AWT',
+                    data: awtAverageData,
                     backgroundColor: '#66b2ff',
                     barThickness: 8,
                     pointStyle: 'rect',
@@ -139,22 +139,22 @@ function renderBarChart() {
                 {
                     label: 'Max AWT',
                     type: 'scatter',
-                    data: window.chartData.maxAwtData,
+                    data: window.chartData.awtMaxData,
                     backgroundColor: 'green',
-                    pointRadius: 3,
+                    pointRadius: 5,
                     pointStyle: 'circle',
                     showLine: false,
-                    order: 4
+                    order: 3
                 },
                 {
                     label: 'Min AWT',
                     type: 'scatter',
-                    data: window.chartData.minAwtData,
+                    data: window.chartData.awtMinData,
                     backgroundColor: 'red',
                     pointRadius: 4,
                     pointStyle: 'circle',
                     showLine: false,
-                    order: 3
+                    order: 4
                 },
                 {
                     label: 'Tact Time',

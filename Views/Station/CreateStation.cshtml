@@ -1,40 +1,49 @@
 ﻿@model Dashboard.ViewModels.CreateStationViewModel
 
-<form asp-action="CreateStation" method="post">
-    <input asp-for="UserId" type="hidden" />
+@{
+    ViewData["Title"] = "Create Station";
+    <link rel="stylesheet" href="~/css/gestion.css" />
+}
 
-    <div class="form-group">
-        <label asp-for="StationName" class="control-label"></label>
-        <input asp-for="StationName" class="form-control" />
-        <span asp-validation-for="StationName" class="text-danger"></span>
-    </div>
+<div class="card p-4 shadow-sm">
+    <h2>Create a New Station</h2>
 
-    <div class="form-group">
-        <label asp-for="GumValue" class="control-label"></label>
-        <input asp-for="GumValue" class="form-control" />
-        <span asp-validation-for="GumValue" class="text-danger"></span>
-    </div>
+    <form asp-action="CreateStation" method="post">
+        <input asp-for="UserId" type="hidden" />
 
-    <div class="form-group">
-        <label asp-for="AwtValue" class="control-label"></label>
-        <input asp-for="AwtValue" class="form-control" />
-        <span asp-validation-for="AwtValue" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PartNumber" class="control-label"></label>
-        <input asp-for="PartNumber" class="form-control" />
-        <span asp-validation-for="PartNumber" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="DirectOperator" class="control-label"></label>
-        <input asp-for="DirectOperator" class="form-control" />
-        <span asp-validation-for="DirectOperator" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="IndirectOperator" class="control-label"></label>
-        <input asp-for="IndirectOperator" class="form-control" />
-        <span asp-validation-for="IndirectOperator" class="text-danger"></span>
-    </div>
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-    <button  type="submit" class="btn btn-primary">Create Station</button>
-</form>
+        <div class="form-group mb-3">
+            <label asp-for="StationName" class="form-label"></label>
+            <input asp-for="StationName" class="form-control" />
+            <span asp-validation-for="StationName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="PartNumber" class="form-label"></label>
+            <input asp-for="PartNumber" class="form-control" />
+            <span asp-validation-for="PartNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="DirectOperator" class="form-label"></label>
+            <input asp-for="DirectOperator" class="form-control" />
+            <span asp-validation-for="DirectOperator" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="IndirectOperator" class="form-label"></label>
+            <input asp-for="IndirectOperator" class="form-control" />
+            <span asp-validation-for="IndirectOperator" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-dark">
+                <i class="fas fa-plus"></i> Create
+            </button>
+            <a asp-action="Stations" class="btn btn-outline-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
