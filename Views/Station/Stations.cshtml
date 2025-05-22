@@ -79,61 +79,61 @@
                         @if (User.IsInRole("Manager"))
                         {
                             <td>
-                                @if (station.GUMEntries?.Any() == true)
-                                {
-                                    var gumList = station.GUMEntries.OrderByDescending(
-                                         g => g.Timestamp).ToList();
-
-                               var LatestGum = gumList.FirstOrDefault();
-                               <div class="dropdown">
-                                  <button class="btn btn-danger btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                      @LatestGum.Value </button>
-                                      <ul class="dropdown-menu">
-                                            @foreach (var gum in gumList)
-                                            {
-                                                <li><span class="dropdown-item">
-                                                     @gum.Value
-                                                </span></li>
-                                            }
-
-                                      </ul>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-
+                            @if (station.GUMEntries?.Any() == true)
+                        {
+                       var gumList = station.GUMEntries.OrderByDescending(g => g.Timestamp).ToList();
+                       var LatestGum = gumList.FirstOrDefault();
+                       <div class="dropdown">
+                       <button class="btn btn-danger btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        @LatestGum.Value
+                        </button>
+                       <ul class="dropdown-menu">
+                       @foreach (var gum in gumList)
+                        {
+                    <li class="d-flex align-items-center justify-content-between px-2">
+                        <span class="dropdown-item-text">
+                            @gum.Value
+                             <i class= "fas fa-trash text-danger ms-2" onclick="deleteGumEntry(@gum.Id)"></i>
+                            </span>
+                    </li>
+                        }
+                       </ul>
+                       </div>
+                            }
+                             else
+                            {
+                            <span class="text-muted">-</span>
+                            }
                             </td>
+
                             <td>
-                                @if (station.AWTEntries?.Any() == true)
-                                {
-                                    var awtList = station.AWTEntries.OrderByDescending(
-                                    a => a.Timestamp).ToList();
+    @if (station.AWTEntries?.Any() == true)
+    {
+        var awtList = station.AWTEntries.OrderByDescending(a => a.Timestamp).ToList();
+        var LatestAwt = awtList.FirstOrDefault();
+        <div class="dropdown">
+            <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                @LatestAwt.Value
+            </button>
+            <ul class="dropdown-menu">
+                @foreach (var awt in awtList)
+                {
+                    <li class="d-flex align-items-center justify-content-between px-2">
+                        <span class="dropdown-item-text">
+                            @awt.Value
+                             <i class= "fas fa-trash text-danger ms-2" style="cursor:pointer;" onclick="deleteAwtEntry(@awt.Id)"></i>
+                            </span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <span class="text-muted">-</span>
+    }
+</td>
 
-                                    var LatestAwt = awtList.FirstOrDefault();
-                                    <div class="dropdown">
-                                        <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            @LatestAwt.Value
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            @foreach (var awt in awtList)
-                                            {
-                                                <li>
-                                                    <span class="dropdown-item">
-                                                        @awt.Value
-                                                    </span>
-                                                </li>
-                                            }
-
-                                        </ul>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </td>
                         }
 
                         @* Admin: Statistiques *@
@@ -154,10 +154,10 @@
                         @if (User.IsInRole("Manager"))
                         {
                             <td>
-                                <a class="btn btn-sm btn-dark me-1" asp-action="Edit" asp-route-id="@station.StationId">
+                                <a class="btn btn-sm btn-danger me-1" asp-action="Edit" asp-route-id="@station.StationId">
                                     <i class="fas fa-pencil-alt"></i> Edit
                                 </a>
-                                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@station.StationId">
+                                <a class="btn btn-sm btn-dark" asp-action="Delete" asp-route-id="@station.StationId">
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
                                 <div class="mt-2">
@@ -176,3 +176,36 @@
         </table>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function deleteGumEntry(id) {
+            if (confirm("Delete this GUM value ?")) {
+                fetch(`/Station/DeleteGumEntry/${id}`,{
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // ou mettre à jour dynamiquement
+                    } else {
+                        alert("Failed to delete GUM entry.");
+                    }
+                });
+            }
+        }
+
+        function deleteAwtEntry(id) {
+            if (confirm("Delete this AWT value ?")) {
+                fetch(`/Station/DeleteAwtEntry/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Failed to delete AWT entry.");
+                    }
+                });
+            }
+        }
+    </script>
+}

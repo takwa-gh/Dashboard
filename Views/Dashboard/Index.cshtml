@@ -117,29 +117,31 @@
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         })));
 
-    console.log("modelData:", modelData);
-
         window.dashboardData = modelData;
 
-        window.chartData = {
+            window.chartData = {
             labels: modelData.stations.map(s => s.stationName),
 
             // GUM
-            gumAverageData: modelData.stations.map(s => parseFloat(s.averageGumValue).toFixed(2)),
-            gumMaxData: modelData.stations.map(s => parseFloat(s.maxGumValue).toFixed(2)),
-            gumMinData: modelData.stations.map(s => parseFloat(s.minGumValue).toFixed(2)),
+            gumAverageData: modelData.stations.map(s => parseFloat(s.averageGumValue ?? 0).toFixed(2)),
+            gumMaxData: modelData.stations.map(s => parseFloat(s.maxGumValue ?? 0).toFixed(2)),
+            gumMinData: modelData.stations.map(s => parseFloat(s.minGumValue ?? 0).toFixed(2)),
 
             // AWT
-            awtAverageData: modelData.stations.map(s => parseFloat(s.averageAwtValue).toFixed(2)),
-            awtMaxData: modelData.stations.map(s => parseFloat(s.maxAwtValue).toFixed(2)),
-            awtMinData: modelData.stations.map(s => parseFloat(s.minAwtValue).toFixed(2)),
+            awtAverageData: modelData.stations.map(s => parseFloat(s.averageAwtValue ?? 0).toFixed(2)),
+            awtMaxData: modelData.stations.map(s => parseFloat(s.maxAwtValue ?? 0).toFixed(2)),
+            awtMinData: modelData.stations.map(s => parseFloat(s.minAwtValue ?? 0).toFixed(2)),
 
             // Paramètres globaux
             tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.tactTime),
             conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.conveyorSpeed),
             cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.cycleTime)
         };
+             
+
     </script>
 
     <script src="~/js/dashboard.js"></script>
+   
+
 }

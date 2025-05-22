@@ -37,12 +37,14 @@ public class StationService : IStationService
 
             GUMEntries = station.GUMEntries.Select(g => new StationGUM
             {
+                Id = g.Id,
                 Value = g.Value,
                 Timestamp = g.Timestamp
             }).ToList(),
 
             AWTEntries = station.AWTEntries.Select(a => new StationAWT
             {
+                Id = a.Id,
                 Value = a.Value,
                 Timestamp = a.Timestamp
             }).ToList(),
@@ -211,5 +213,25 @@ public class StationService : IStationService
         station.AverageGumValue = values.Average();
         return Task.CompletedTask;
     }
+    public async Task DeleteGumEntryAsync(int id)
+    {
+        var entry = await _context.StationGUMs.FindAsync(id);
+        if (entry != null)
+        {
+            _context.StationGUMs.Remove(entry);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task  DeleteAwtEntryAsync(int id)
+    {
+        var entry = await _context.StationAWTs.FindAsync(id);
+        if (entry != null)
+        {
+            _context.StationAWTs.Remove(entry);
+            await _context.SaveChangesAsync();
+        }
+    }
+
 }
 

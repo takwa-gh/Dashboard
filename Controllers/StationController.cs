@@ -1,6 +1,7 @@
 ﻿using Dashboard.Services;
 using Dashboard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Dashboard.Controllers
@@ -8,10 +9,12 @@ namespace Dashboard.Controllers
     public class StationController : Controller
     {
         private readonly IStationService _stationService;
+        
 
         public StationController(IStationService stationService)
         {
             _stationService = stationService;
+            
         }
 
         public async Task<IActionResult> Stations(string? userName)
@@ -216,6 +219,25 @@ namespace Dashboard.Controllers
             await _stationService.AddAWTEntryAsync(model.StationId, model.Value);
             return RedirectToAction("Stations");
         }
+        [HttpDelete]
+        
+        public async Task<IActionResult> DeleteGumEntry(int id)
+        {
+             await _stationService.DeleteGumEntryAsync(id);
+
+            return RedirectToAction("Stations");
+        }
+
+        [HttpDelete]
+        [Route("Station/DeleteAwtEntry/{id}")]
+        public async Task<IActionResult> DeleteAwtEntry(int id)
+        {
+            await _stationService.DeleteAwtEntryAsync (id);
+            return RedirectToAction("Stations");
+        }
+
+
+
     }
 
 }

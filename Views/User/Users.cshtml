@@ -41,12 +41,10 @@
                             <a class="btn btn-sm btn-dark" asp-action="Edit" asp-route-id="@user.UserId">
                                     <i class="fas fa-pencil-alt"></i> Edit
                                 </a>
-                            <form asp-action="DeleteConfirmed" asp-controller="User" asp-route-id="@user.UserId" method="post">
-                                
-                            <button type="submit" class="btn btn-sm btn-danger" >
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                             </form>
+                            <a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+
                             </td>
                         </tr>
                     }

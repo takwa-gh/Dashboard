@@ -32,14 +32,14 @@
 
             <!-- Formulaire de confirmation de suppression -->
             <form asp-action="DeleteConfirmed" method="post">
-                <input type="hidden" name="userId" value="@Model.UserId" />
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Users" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Cancel
-                    </a>
+                <input type="hidden" name="id" value="@Model.UserId" />
+                <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-trash"></i> Delete
                     </button>
+                    <a asp-action="Users" class="btn btn-secondary">
+                    Cancel
+                    </a>
                 </div>
             </form>
         </div>

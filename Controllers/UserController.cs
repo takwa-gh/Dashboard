@@ -67,7 +67,7 @@ namespace Dashboard.Controllers
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
-            return View("Delete");
+            return View("Delete",user);
         }
 
         // Traitement de suppression

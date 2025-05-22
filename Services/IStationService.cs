@@ -15,6 +15,10 @@ namespace Dashboard.Services
         // méthodes pour gestion des entrées GUM / AWT
         Task AddAWTEntryAsync(int stationId, double awtValue);
         Task AddGUMEntryAsync(int stationId, double gumValue);
+       
+
+        Task  DeleteGumEntryAsync(int id);
+        Task DeleteAwtEntryAsync(int id);
     }
 
 

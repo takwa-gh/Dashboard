@@ -5,84 +5,106 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Edit Dashboard Parameters";
-    
+    <link rel="stylesheet" href="~/css/gestion.css" />
 }
 
-<h2>Dashboard Parameters</h2>
+<div class="card p-4 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">@ViewData["Title"]</h2>
+     
+    </div>
 
-<form asp-action="EditParams" method="post">
+    <form asp-action="EditParams" method="post" class="needs-validation">
 
-    @if (HttpContextAccessor.HttpContext.User.IsInRole("Manager"))
-    {
-        <div class="form-group">
-            <label asp-for="DashboardInfo.ConveyorSpeed"></label>
-            <input asp-for="DashboardInfo.ConveyorSpeed" class="form-control" />
-            <span asp-validation-for="DashboardInfo.ConveyorSpeed" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardInfo.TactTime"></label>
-            <input asp-for="DashboardInfo.TactTime" class="form-control" />
-            <span asp-validation-for="DashboardInfo.TactTime" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardInfo.TargetQuantity"></label>
-            <input asp-for="DashboardInfo.TargetQuantity" class="form-control" />
-            <span asp-validation-for="DashboardInfo.TargetQuantity" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardInfo.ActualOutput"></label>
-            <input asp-for="DashboardInfo.ActualOutput" class="form-control" />
-            <span asp-validation-for="DashboardInfo.ActualOutput" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardInfo.CycleTime"></label>
-            <input asp-for="DashboardInfo.CycleTime" class="form-control" />
-            <span asp-validation-for="DashboardInfo.CycleTime" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardInfo.WorkingTime"></label>
-            <input asp-for="DashboardInfo.WorkingTime" class="form-control" />
-            <span asp-validation-for="DashboardInfo.WorkingTime" class="text-danger"></span>
-        </div>
-        <input type="hidden" asp-for="DashboardHeader.Plant" />
-        <input type="hidden" asp-for="DashboardHeader.Project" />
-        <input type="hidden" asp-for="DashboardHeader.Family" />
-        <input type="hidden" asp-for="DashboardHeader.ControlNumber" />
+        @if (HttpContextAccessor.HttpContext.User.IsInRole("Manager"))
+        {
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.ConveyorSpeed" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.ConveyorSpeed" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.ConveyorSpeed" class="text-danger"></span>
+                </div>
 
-    }
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.TactTime" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.TactTime" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.TactTime" class="text-danger"></span>
+                </div>
 
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.TargetQuantity" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.TargetQuantity" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.TargetQuantity" class="text-danger"></span>
+                </div>
 
-    @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin"))
-    {
-        <input type="hidden" asp-for="DashboardInfo.ConveyorSpeed" />
-        <input type="hidden" asp-for="DashboardInfo.TactTime" />
-        <input type="hidden" asp-for="DashboardInfo.TargetQuantity" />
-        <input type="hidden" asp-for="DashboardInfo.ActualOutput" />
-        <input type="hidden" asp-for="DashboardInfo.CycleTime" />
-        <input type="hidden" asp-for="DashboardInfo.WorkingTime" />
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.ActualOutput" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.ActualOutput" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.ActualOutput" class="text-danger"></span>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="DashboardHeader.Plant"></label>
-            <input asp-for="DashboardHeader.Plant" class="form-control" />
-            <span asp-validation-for="DashboardHeader.Plant" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.CycleTime" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.CycleTime" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.CycleTime" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardInfo.WorkingTime" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardInfo.WorkingTime" class="form-control" />
+                    <span asp-validation-for="DashboardInfo.WorkingTime" class="text-danger"></span>
+                </div>
+
+                <!-- Champs cachés pour les valeurs de DashboardHeader -->
+                <input type="hidden" asp-for="DashboardHeader.Plant" />
+                <input type="hidden" asp-for="DashboardHeader.Project" />
+                <input type="hidden" asp-for="DashboardHeader.Family" />
+                <input type="hidden" asp-for="DashboardHeader.ControlNumber" />
+            </div>
+        }
+
+        @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin"))
+        {
+            <!-- Champs cachés pour les valeurs DashboardInfo -->
+            <input type="hidden" asp-for="DashboardInfo.ConveyorSpeed" />
+            <input type="hidden" asp-for="DashboardInfo.TactTime" />
+            <input type="hidden" asp-for="DashboardInfo.TargetQuantity" />
+            <input type="hidden" asp-for="DashboardInfo.ActualOutput" />
+            <input type="hidden" asp-for="DashboardInfo.CycleTime" />
+            <input type="hidden" asp-for="DashboardInfo.WorkingTime" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardHeader.Plant" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardHeader.Plant" class="form-control" />
+                    <span asp-validation-for="DashboardHeader.Plant" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardHeader.Project" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardHeader.Project" class="form-control" />
+                    <span asp-validation-for="DashboardHeader.Project" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardHeader.Family" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardHeader.Family" class="form-control" />
+                    <span asp-validation-for="DashboardHeader.Family" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DashboardHeader.ControlNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="DashboardHeader.ControlNumber" class="form-control" />
+                    <span asp-validation-for="DashboardHeader.ControlNumber" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-save"></i> Save Parameters
+            </button>
         </div>
-        <div class="form-group">
-            <label asp-for="DashboardHeader.Project"></label>
-            <input asp-for="DashboardHeader.Project" class="form-control" />
-            <span asp-validation-for="DashboardHeader.Project" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardHeader.Family"></label>
-            <input asp-for="DashboardHeader.Family" class="form-control" />
-            <span asp-validation-for="DashboardHeader.Family" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DashboardHeader.ControlNumber"></label>
-            <input asp-for="DashboardHeader.ControlNumber" class="form-control" />
-            <span asp-validation-for="DashboardHeader.ControlNumber" class="text-danger"></span>
-        </div>
-    }
 
-    <button type="submit" class="btn btn-danger">Save</button>
-
-</form>
+    </form>
+</div>

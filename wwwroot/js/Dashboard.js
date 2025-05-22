@@ -100,20 +100,22 @@ function renderBarChart() {
     const canvas = document.getElementById('barChart');
     if (!canvas) return;
 
-    const { labels, gumAverageData, awtAverageData } = window.chartData;
+    const { labels, gumAverageData, awtAverageData, gumMaxData,gumMinData,awtMaxData,awtMinData } = window.chartData;
     const minWidthPerStation = 80; // pixels par station
     const totalWidth = labels.length * minWidthPerStation;
     canvas.width = totalWidth;
 
-    const flectuationRateAWTData = window.chartData.awtMaxData.map((max, i) => {
-        const min = window.chartData.awtMinData?.[i] ?? 0;
-        return (max - min) * 100; // en pourcentage
+    // Calcul du Flectuation Rate pour chaque station
+    const flectuationRateAwt = awtMaxData.map((max, i) => {
+        const min = awtMinData[i];
+        return min !== 0 ? +((max - min) / min).toFixed(2) : 0;
     });
 
-    const flectuationPoints = window.chartData.labels.map((label, i) => ({
-        x: label,
-        y: flectuationRateAWTData[i]
-    }));
+    const flectuationRateGum = gumMaxData.map((max, i) => {
+        const min = gumMinData[i];
+        return min !== 0 ? +((max - min) / min).toFixed(2) : 0;
+    });
+
 
     new Chart(canvas, {
         type: 'bar',
@@ -139,7 +141,7 @@ function renderBarChart() {
                 {
                     label: 'Max AWT',
                     type: 'scatter',
-                    data: window.chartData.awtMaxData,
+                    data: awtMaxData,
                     backgroundColor: 'green',
                     pointRadius: 5,
                     pointStyle: 'circle',
@@ -149,7 +151,7 @@ function renderBarChart() {
                 {
                     label: 'Min AWT',
                     type: 'scatter',
-                    data: window.chartData.awtMinData,
+                    data: awtMinData,
                     backgroundColor: 'red',
                     pointRadius: 4,
                     pointStyle: 'circle',
@@ -198,14 +200,32 @@ function renderBarChart() {
                 {
                     label: 'Flectuation Rate AWT',
                     type: 'scatter',
-                    data: flectuationPoints,
+                    data: flectuationRateAwt.map((value, index) => ({
+                        x: labels[index],
+                        y: value
+                    })),
                     backgroundColor: 'black',
                     pointRadius: 5,
                     pointStyle: 'triangle',
                     showLine: false,
                     yAxisID: 'yRight',
                     order: 8
+                },
+                {
+                    label: 'Flectuation Rate GUM',
+                    type: 'scatter',
+                    data: flectuationRateGum.map((value, index) => ({
+                        x: labels[index],
+                        y: value
+                    })),
+                    backgroundColor: 'yellow',
+                    pointRadius: 5,
+                    pointStyle: 'triangle',
+                    showLine: false,
+                    yAxisID: 'yRight',
+                    order: 9
                 }
+
             ]
         },
         options: {
@@ -230,7 +250,7 @@ function renderBarChart() {
                 yRight: {
                     position: 'right',
                     beginAtZero: true,
-                    max :100,
+                    max :50,
 
                     grid: {
                         drawOnChartArea: false // évite les lignes en double
