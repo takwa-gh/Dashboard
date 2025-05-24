@@ -13,9 +13,15 @@ namespace Dashboard.Helpers
         // Méthode pour vérifier un mot de passe
         public static bool VerifyPassword(string EnteredPassword, string storedHash)
         {
-            // Vérifie si le mot de passe entré correspond au mot de passe haché
-            return BCrypt.Net.BCrypt.Verify(EnteredPassword, storedHash);
-        }
-
+            try {
+                // Vérifie si le mot de passe entré correspond au mot de passe haché
+                return BCrypt.Net.BCrypt.Verify(EnteredPassword, storedHash);
+            }
+            catch
+            {
+                // En cas d'erreur, retourne false
+                return false;
+            }
+            }
     }
 }

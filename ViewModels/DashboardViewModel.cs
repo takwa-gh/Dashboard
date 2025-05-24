@@ -11,8 +11,8 @@ namespace Dashboard.ViewModels
         public double TotalGum { get; set; }
         public double TotalAwt { get; set; }
         public double PourcentageAWTvsGUM { get; set; } //(TotalAwt / TotalGum) * 100
-        public string DonutColor { get; set; }
-        public string EvaluationLabel { get; set; } // "Bad", "Good", etc.
+       
+        
 
         // KPI 2 : Manpower Allocation (à venir si nécessaire)
         public double TotalManpower { get; set; } //somme de DirectOperator + IndirectOperator
@@ -21,20 +21,19 @@ namespace Dashboard.ViewModels
 
         // KPI 3 : Line Effectiveness (à venir si nécessaire)
         public double LineEffectiveness { get; set; } //somme(abs(CycleTime - ConveyorSpeed)) / (TotalManpower * ConveyorSpeed)
-        public string LineEffectivenessColor { get; set; }
-        public string LineEffectivenessEvaluation { get; set; }
+        
 
         // Tu peux aussi ajouter d'autres sections comme l’en-tête ou des messages
        
-        public string ManpowerColor { get; set; }
-        public string ManpowerEvaluation { get; set; }
+       
 
         public bool HasData => Stations != null && Stations.Any();
 
         // Paramètres saisis manuellement ou enregistrés par un manager
 
         public DashboardParamViewModel DashboardParams { get; set; }
-      
+        
+
 
 
     }

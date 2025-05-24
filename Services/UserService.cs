@@ -44,7 +44,7 @@ namespace Dashboard.Services
                 UserName = model.UserName,
                 Email = model.Email,
                 Role = model.Role,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
 
             _context.Users.Add(user);
@@ -76,7 +76,7 @@ namespace Dashboard.Services
 
             if (!string.IsNullOrEmpty(model.NewPassword))
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             }
 
             _context.Users.Update(user);
