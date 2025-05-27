@@ -47,6 +47,35 @@ namespace Dashboard.Services
                 },
             };
         }
+        public async Task<DashboardHeaderViewModel> GetDashboardHeaderAsync()
+        {
+            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            if (param == null) return new DashboardHeaderViewModel();
+
+            return new DashboardHeaderViewModel
+            {
+                Plant = param.Plant,
+                Project = param.Project,
+                Family = param.Family,
+                ControlNumber = param.ControlNumber
+            };
+        }
+
+        public async Task<DashboardInfoViewModel> GetDashboardInfoAsync()
+        {
+            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            if (param == null) return new DashboardInfoViewModel();
+
+            return new DashboardInfoViewModel
+            {
+                TactTime = param.TactTime,
+                ConveyorSpeed = param.ConveyorSpeed,
+                TargetQuantity = param.TargetQuantity,
+                WorkingTime = param.WorkingTime,
+                ActualOutput = param.ActualOutput,
+                CycleTime = param.CycleTime
+            };
+        }
 
         public async Task UpdateDashboardInfoAsync(DashboardInfoViewModel model)
         {

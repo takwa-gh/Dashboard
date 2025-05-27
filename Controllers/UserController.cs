@@ -14,10 +14,12 @@ namespace Dashboard.Controllers
     {
         // Injection de dépendance du service user
         private readonly IUserService _userService;
+        private readonly IActivityLogService _activityLogService;
         
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IActivityLogService activityLogService)
         {
             _userService = userService;
+            _activityLogService = activityLogService;
         }
 
         // Liste des utilisateurs
@@ -40,6 +42,7 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _userService.CreateAsync(model);
+            await _activityLogService.LogAsync(User.Identity?.Name, $"Create user : {model.UserName}");
             return RedirectToAction("Users");
         }
 
@@ -58,6 +61,7 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _userService.UpdateAsync(model);
+            await _activityLogService.LogAsync(User.Identity?.Name, $"Edit user : {model.UserName}");
             return RedirectToAction("Users");
         }
 
@@ -75,7 +79,12 @@ namespace Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _userService.DeleteAsync(id);
+            var user = await _userService.GetByIdAsync(id);
+            if (user != null)
+            {
+                await _userService.DeleteAsync(id);
+                await _activityLogService.LogAsync(User.Identity?.Name, $"Suppression de l'utilisateur : {user.UserName}");
+            }
             return RedirectToAction("Users");
         }
     }

@@ -159,7 +159,7 @@ public class StationService : IStationService
         await _context.SaveChangesAsync();
         return true;
     }
-    [HttpGet]
+    
     public async Task AddAWTEntryAsync(int stationId, double awtValue)
     {
         var station = await _context.Stations
@@ -177,7 +177,7 @@ public class StationService : IStationService
         await UpdateAwtStatsAsync(station);
         await _context.SaveChangesAsync();
     }
-    [HttpPost]
+   
     public async Task AddGUMEntryAsync(int stationId, double gumValue)
     {
         var station = await _context.Stations
@@ -232,6 +232,5 @@ public class StationService : IStationService
             await _context.SaveChangesAsync();
         }
     }
-
 }
 

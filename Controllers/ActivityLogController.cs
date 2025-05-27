@@ -1,5 +1,6 @@
 ﻿using Dashboard.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dashboard.Controllers
 {
@@ -13,9 +14,9 @@ namespace Dashboard.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string userName, DateTime? startDate, DateTime? endDate)
         {
-            var logs = await _activityLogService.GetLogsAsync();
+            var logs = await _activityLogService.GetFilteredLogsAsync(userName, startDate, endDate);
             return View(logs);
         }
 

@@ -1,4 +1,5 @@
-﻿using Dashboard.Services;
+﻿using Dashboard.Models;
+using Dashboard.Services;
 using Dashboard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,13 @@ namespace Dashboard.Controllers
     public class StationController : Controller
     {
         private readonly IStationService _stationService;
+        private readonly IActivityLogService _activityLogService;
         
 
-        public StationController(IStationService stationService)
+        public StationController(IStationService stationService , IActivityLogService activityLogService)
         {
             _stationService = stationService;
-            
+            _activityLogService = activityLogService;
         }
 
         public async Task<IActionResult> Stations(string? userName)
@@ -80,8 +82,9 @@ namespace Dashboard.Controllers
                 TempData["ErrorMessage"] = "Erreur lors de la création.";
                 return View(model);
             }
+            await _activityLogService.LogAsync(User.Identity?.Name, $"Created station: {model.StationName}");
 
-            TempData["SuccessMessage"] = "Station créée avec succès.";
+            TempData["SuccessMessage"] = "Station created successfully.";
             return RedirectToAction(nameof(Stations));
         }
 
@@ -127,24 +130,26 @@ namespace Dashboard.Controllers
             var userIdStr = User.FindFirstValue("UserId");
             if (!int.TryParse(userIdStr, out int userId))
             {
-                TempData["ErrorMessage"] = "Session expirée.";
+                TempData["ErrorMessage"] = "Expired session.";
                 return RedirectToAction("Login", "Auth");
             }
 
             if (User.IsInRole("Admin"))
             {
-                TempData["ErrorMessage"] = "Accès refusé.";
+                TempData["ErrorMessage"] = "Access denied.";
                 return RedirectToAction(nameof(Stations));
             }
 
             var success = await _stationService.EditStationAsync(model, userId);
             if (!success)
             {
-                TempData["ErrorMessage"] = "Erreur lors de la modification.";
+                TempData["ErrorMessage"] = "Update failed.";
                 return View(model);
             }
+            await _activityLogService.LogAsync(User.Identity?.Name, $"Updated station : {model.StationName}");
 
-            TempData["SuccessMessage"] = "Station mise à jour avec succès.";
+
+            TempData["SuccessMessage"] = "Station updated successfully.";
             return RedirectToAction(nameof(Stations));
         }
 
@@ -154,7 +159,7 @@ namespace Dashboard.Controllers
             var userIdStr = User.FindFirstValue("UserId");
             if (!int.TryParse(userIdStr, out int userId))
             {
-                TempData["ErrorMessage"] = "Session expirée.";
+                TempData["ErrorMessage"] = "Expired session.";
                 return RedirectToAction("Login", "Auth");
             }
 
@@ -162,7 +167,7 @@ namespace Dashboard.Controllers
             var station = stations.FirstOrDefault(s => s.StationId == id);
             if (station == null)
             {
-                TempData["ErrorMessage"] = "Station introuvable.";
+                TempData["ErrorMessage"] = "Station not found.";
                 return RedirectToAction(nameof(Stations));
             }
 
@@ -183,11 +188,12 @@ namespace Dashboard.Controllers
             var success = await _stationService.DeleteStationAsync(id, userId);
             if (!success)
             {
-                TempData["ErrorMessage"] = "Erreur lors de la suppression.";
+                TempData["ErrorMessage"] = "Error while deleting.";
                 return RedirectToAction(nameof(Stations));
             }
+            await _activityLogService.LogAsync(User.Identity?.Name, $"Deleted station : (ID: {id})");
 
-            TempData["SuccessMessage"] = "Station supprimée avec succès.";
+            TempData["SuccessMessage"] = "Station deleted successfully .";
             return RedirectToAction(nameof(Stations));
         }
         [HttpGet]
@@ -202,6 +208,8 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _stationService.AddGUMEntryAsync(model.StationId, model.Value);
+            await _activityLogService.LogAsync(User.Identity?.Name,$"Add a GUM value ({model.Value}) to station ID {model.StationId}");
+
             return RedirectToAction("Stations");
         }
 
@@ -217,6 +225,8 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View(model);
 
             await _stationService.AddAWTEntryAsync(model.StationId, model.Value);
+            await _activityLogService.LogAsync(User.Identity?.Name,$"Add a AWT value ({model.Value}) to station ID {model.StationId}");
+
             return RedirectToAction("Stations");
         }
         [HttpDelete]
@@ -224,6 +234,8 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> DeleteGumEntry(int id)
         {
              await _stationService.DeleteGumEntryAsync(id);
+            await _activityLogService.LogAsync(User.Identity?.Name,$"Delete a GUM value");
+
 
             return RedirectToAction("Stations");
         }
@@ -233,6 +245,8 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> DeleteAwtEntry(int id)
         {
             await _stationService.DeleteAwtEntryAsync (id);
+            await _activityLogService.LogAsync(User.Identity?.Name,$"Delete an AWT value");
+
             return RedirectToAction("Stations");
         }
 
