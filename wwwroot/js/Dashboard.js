@@ -18,7 +18,7 @@ function checkDashboardData() {
 function getStatusLabel(value, thresholds = { bad: 15, warning: 100, mode: "lessThan" }) {
     if (thresholds.mode === "between") {
         if (value < thresholds.bad) return { label: "Bad", color: "#FFCC00" };
-        if (value < thresholds.warning) return { label: "Good", color: green };
+        if (value < thresholds.warning) return { label: "Good", color: "#00C853" };
         return { label: "Bad", color: "#FF0000" };
     } else {
         return value < thresholds.bad
@@ -26,7 +26,6 @@ function getStatusLabel(value, thresholds = { bad: 15, warning: 100, mode: "less
             : { label: "Bad", color: "#FF0000" };
     }
 }
-
 // Jauge graduée avec titre + légende dynamique
 function renderGaugeWithGraduation(canvasId, value, label, options) {
     const canvas = document.getElementById(canvasId);
@@ -64,7 +63,7 @@ function renderGaugeWithGraduation(canvasId, value, label, options) {
     valueDiv.style.fontSize = "1.4rem";
     valueDiv.style.fontWeight = "700";
     valueDiv.style.color = "#333";
-    valueDiv.innerText = `${value.toFixed(1)}%`;
+    valueDiv.innerText = `${value.toFixed(2)}%`;
     gaugeContainer.appendChild(valueDiv);
 
     const status = getStatusLabel(value, thresholds);
@@ -224,7 +223,7 @@ function renderBarChart() {
                 yRight: {
                     position: 'right',
                     beginAtZero: true,
-                    max: 50,
+                    max: 100,
                     grid: { drawOnChartArea: false },
                     ticks: {
                         callback: value => `${value}%`
@@ -279,6 +278,5 @@ document.addEventListener('DOMContentLoaded', function () {
         renderBarChart();
     }
 });
-
 
 

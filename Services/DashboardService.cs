@@ -18,6 +18,7 @@ namespace Dashboard.Services
             var latestParams = _context.DashboardParams
                 .OrderByDescending(b => b.Id)
                 .FirstOrDefault();
+            
             if (latestParams == null)
             {
                 return new DashboardHeaderViewModel
@@ -33,7 +34,8 @@ namespace Dashboard.Services
                 Plant = latestParams.Plant,
                 Project = latestParams.Project,
                 Family = latestParams.Family,
-                ControlNumber = latestParams.ControlNumber
+                ControlNumber = latestParams.ControlNumber,
+               
             };
         }
         public async Task<DashboardViewModel> GetDashboardDataAsync()
@@ -58,8 +60,10 @@ namespace Dashboard.Services
             string controlNumber = latestParams?.ControlNumber ?? string.Empty;
 
             // 3. Calculs des indicateurs
-            var totalGum = stations.Sum(s => s.AverageGumValue); 
-            var totalAwt = stations.Sum(s => s.AverageAwtValue);
+            double totalGum = stations.Sum(s => s.AverageGumValue); 
+            double totalAwt = stations.Sum(s => s.AverageAwtValue);
+
+            double AwtVsGum = (totalGum > 0) ? Math.Round((totalAwt/totalGum) * 100,2) : 1;
 
             double totalManpower = Normalize(stations.Sum(s => s.DirectOperator + s.IndirectOperator));
             double manpowerNeeded = (tactTime > 0) ? Normalize(totalAwt / tactTime) : 1;
@@ -77,6 +81,7 @@ namespace Dashboard.Services
                 Stations = stations,
                 TotalGum = totalGum,
                 TotalAwt = totalAwt,
+                pourcentageAWTvsGUM = AwtVsGum,
                 TotalManpower = totalManpower,
                 ManpowerNeeded = manpowerNeeded,
                 ManpowerAllocation = manpowerAllocation,
@@ -96,7 +101,9 @@ namespace Dashboard.Services
                     Plant = plant,
                     Project = project,
                     Family = family,
-                    ControlNumber = controlNumber }
+                    ControlNumber = controlNumber,
+                    
+                    }
 
                 },
             };

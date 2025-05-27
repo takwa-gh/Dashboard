@@ -1,5 +1,6 @@
 ﻿using Dashboard.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Dashboard.Views.Shared.Components
 {
@@ -12,9 +13,9 @@ namespace Dashboard.Views.Shared.Components
             _dashboardService = dashboardService;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            var model = _dashboardService.GetDashboardHeader();
+            var model =  _dashboardService.GetDashboardHeader(); // méthode asynchrone à implémenter dans le service
             return View(model);
         }
     }

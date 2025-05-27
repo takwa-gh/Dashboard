@@ -1,5 +1,7 @@
 ﻿@using System.Text.Json
+@using Dashboard.ViewModels
 @model Dashboard.ViewModels.DashboardViewModel
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Dashboard - Home";
@@ -9,6 +11,49 @@
 
 <section class="content">
     <div class="container-fluid">
+
+        @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin") && Model.KpiAlerts?.Any() == true)
+        {
+            <div class="d-flex justify-content-end pe-4 pt-2">
+                <div class="dropdown">
+                    <button class="btn bg-transparent border-0 position-relative" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell text-danger fs-4"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            @Model.KpiAlerts.Count()
+                        </span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end p-2 shadow-lg" aria-labelledby="dropdownMenuButton" style="min-width: 300px; max-height: 350px; overflow-y: auto;">
+                        @foreach (var alert in Model.KpiAlerts)
+                        {
+                            string bgColor = alert.Severity == AlertLevel.Warning
+                            ? "bg-warning-subtle border-warning"
+                            : "bg-success-subtle border-success";
+
+                            string textColor = alert.Severity == AlertLevel.Warning
+                            ? "text-warning"
+                            : "text-success";
+
+                            string iconClass = alert.Severity == AlertLevel.Warning
+                            ? "fas fa-exclamation-triangle"
+                            : "fas fa-check-circle";
+
+                            <li class="mb-2">
+                                <div class="dropdown-item border-start border-4 @bgColor rounded px-2 py-2">
+                                    <div class="fw-bold @textColor">
+                                        <i class="@iconClass me-1"></i> @alert.Title
+                                    </div>
+                                    <div class="text-muted small">
+                                        @alert.Message
+                                    </div>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        }
 
         @if (Model.HasData)
         {
@@ -52,7 +97,7 @@
                                         <td>@Model.DashboardParams.DashboardInfo.WorkingTime</td>
                                     </tr>
                                     <tr>
-                                        <th >No. of Op.</th>
+                                        <th >Num. of Op.</th>
                                         <td>
                                               Direct: @Model.Stations.Sum(s => s.DirectOperator)
 

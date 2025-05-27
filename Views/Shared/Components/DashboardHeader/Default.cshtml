@@ -1,50 +1,60 @@
 ﻿@using System.Security.Claims
+@inject IHttpContextAccessor HttpContextAccessor
 @model Dashboard.ViewModels.DashboardHeaderViewModel
 
-<div class="container-fluid bg- py-3 border-bottom" style="background:white; position: fixed; top: 0; left: 0px; right: 0; z-index: 999;">
+<div class="container-fluid shadow-sm py-2 border-bottom fixed-top" style="z-index: 999;">
     <div class="row align-items-center">
 
         <!-- Colonne gauche : Logo + Infos -->
-        <div class="col-md-4 text-start ps-4">
-            <img src="~/images/yazaki.png" alt="Logo" style="height: 20px;" class="mb-2" />
-            <table class="table table-bordered table-sm mb-0">
-                <tbody>
-                    <tr><td><strong>Plant</strong></td><td>@Model.Plant</td></tr>
-                    <tr><td><strong>Project</strong></td><td>@Model.Project</td></tr>
-                    <tr><td><strong>Family</strong></td><td>@Model.Family</td></tr>
-                </tbody>
-            </table>
+        <div class="col-md-4 d-flex align-items-center ps-4">
+            <img src="~/images/yazaki.png" alt="Logo" style="height: 25px"; class="me-3" />
+            <div class="d-flex flex-column mt-2">
+                <div><strong>Plant:</strong> @Model.Plant</div>
+                <div><strong>Project:</strong> @Model.Project</div>
+                <div><strong>Family:</strong> @Model.Family</div>
+            </div>
         </div>
 
         <!-- Colonne centre : Titre -->
         <div class="col-md-4 text-center">
-            <h2 class="mb-0 fw-bold">GUM vs AWT Dashboard</h2>
+            <h3 class="fw-bold m-0">GUM vs AWT Dashboard</h3>
         </div>
 
-        <!-- Colonne droite : Infos Control + Profil utilisateur -->
-        <div class="col-md-4 text-end pe-4">
-            <table class="table table-bordered table-sm mb-0">
-                <tbody>
-                    <tr><td><strong>Control N°</strong></td><td colspan="2">@Model.ControlNumber</td></tr>
-                    <tr><td>Prepared</td><td>Checked</td> <td>Approved</td></tr>
-                    <tr><td></td><td></td><td></td></tr>
-                </tbody>
-            </table>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <p>Profile</p>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <p class="dropdown-item">Username: @User.Identity.Name</p>
-                        <p class="dropdown-item">Email: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</p>
-                        <p class="dropdown-item">Role: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</p>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")">Change Password</a>
-                        <a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Logout</a>
-                    </div>
-                </li>
+       
+        <div class="col-md-4 pe-4 d-flex justify-content-end align-items-center gap-4">
+            <!-- Infos Control Number -->
+            <div >
+                <div><strong>Control N°:</strong> @Model.ControlNumber</div>
+               
+            </div>
+        
+
+        <!-- Section basse : Profil -->
+        <div class="dropdown align-self-end mt-auto">
+            <a class="btn btn-outline-secondary dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                <li><span class="dropdown-item-text">UserName: @User.Identity?.Name</span></li>
+                <li><span class="dropdown-item-text">Email : @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</span></li>
+                <li><span class="dropdown-item-text">Role : @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</span></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")">Change password</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Logout</a></li>
             </ul>
+        </div>
         </div>
     </div>
 </div>
+        
+    
+
+
+
+
+
+
+
+
+
+  

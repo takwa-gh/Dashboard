@@ -14,102 +14,107 @@ using System.Security.Claims;
 
 namespace Dashboard.Controllers
 {
-    public class AuthController : Controller
-    {
-        private readonly IAuthService _authService;
+     public class AuthController : Controller
+     {
+         private readonly IAuthService _authService;
+         private readonly IActivityLogService _activityLogService;
 
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
-        [HttpGet]
-        public IActionResult Login() => View();
+         public AuthController(IAuthService authService, IActivityLogService activityLogService)
+         {
+             _authService = authService;
+             _activityLogService = activityLogService;
+         }
 
-        [HttpPost]
-        //action declanche en envoyant les informations du connexion
-        public async Task<IActionResult> Login(LoginViewModel model)
+         [HttpGet]
+         public IActionResult Login() => View();
 
-        {
-            //validation des champs du formulaire
-            if (!ModelState.IsValid) 
-                return View(model); // return de meme view + message d'erreur
-            //appel de service de login
-            var isLoginSuccessful = await _authService.Login(model, HttpContext);
-            //si le login est reussi, redirection vers la page d'accueil de dashboard
-            if (isLoginSuccessful)
+         [HttpPost]
+         public async Task<IActionResult> Login(LoginViewModel model)
+         {
+             if (!ModelState.IsValid)
+                 return View(model);
+
+             var isLoginSuccessful = await _authService.Login(model, HttpContext);
+
+             if (isLoginSuccessful)
+             {
+                await _activityLogService.LogAsync(model.Email, "Successful connexion");
+
                 return RedirectToAction("Index", "Dashboard");
-            //sinon une erreur de connexion
+             }
+
+            // Connexion échouée
+            await _activityLogService.LogAsync(model.Email, "Connexion Failed");
+
             ModelState.AddModelError("", "Invalid email or password.");
-            return View(model);
-        }
+             return View(model);
+         }
 
-        public async Task<IActionResult> Logout()
-        {
-            await _authService.Logout(HttpContext);
+         public async Task<IActionResult> Logout()
+         {
+         
+             await _authService.Logout(HttpContext);
+             await _activityLogService.LogAsync(User.Identity?.Name, "Log out");
+            
             return RedirectToAction("Login");
-        }
+         }
 
-        public IActionResult SignUp() => View();
+         public IActionResult SignUp() => View();
 
-        [HttpPost]
-        //action declanche en envoyant les informations du formulaire d'inscription
-        public async Task<IActionResult> SignUp(SignUpViewModel model)
-        {
-            // validation des touts le champs de formulaire d'inscription
-            if (!ModelState.IsValid) 
-                return View(model);
-            if(model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
-                return View(model);
-            }
+         [HttpPost]
+         public async Task<IActionResult> SignUp(SignUpViewModel model)
+         {
+             if (!ModelState.IsValid)
+                 return View(model);
 
-            var isSignedUp = await _authService.SignUp(model);
-            if (isSignedUp)
+             if (model.Password != model.ConfirmPassword)
+             {
+                 ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                 return View(model);
+             }
+
+             var isSignedUp = await _authService.SignUp(model);
+
+             if (isSignedUp)
+             {
+                await _activityLogService.LogAsync(User.Identity?.Name, "Successful SignUp");
+
+
                 return RedirectToAction("Login");
+             }
 
-            ModelState.AddModelError("", "Email already exists.");
-            return View(model);
-        }
-       
-        
-        
-        [HttpGet]
-        [Authorize]
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
+             ModelState.AddModelError("", "Email already exists.");
+             return View(model);
+         }
 
-        [HttpPost]
-        [Authorize] // necessite de connexion pour changer pwd
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            //verifier les champs sont valides 
-            if (!ModelState.IsValid)
-                return View(model);
+         [HttpGet]
+         [Authorize]
+         public IActionResult ChangePassword() => View();
 
-            //recuperer l'ID de l'utilisateur connecté
+         [HttpPost]
+         [Authorize]
+         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+         {
+             if (!ModelState.IsValid)
+                 return View(model);
 
-            if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
-                return Unauthorized();
+             if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
+                 return Unauthorized();
 
-            //appel de service de changement de mot de passe
-            var result = await _authService.ChangePassword(userId, model.CurrentPassword, model.NewPassword);
+             var result = await _authService.ChangePassword(userId, model.CurrentPassword, model.NewPassword);
 
-            if (!result)
-            {
-                ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
-                return View(model);
-            }
+             if (!result)
+             {
+                 ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
+                 return View(model);
+             }
 
-            ViewBag.Message = "password updated successfully.";
-            return View();
-        }
-    }
-}
+            await _activityLogService.LogAsync(User.Identity?.Name, "Password change");
 
 
+            ViewBag.Message = "Password updated successfully.";
+             return View();
+         }
+     }
 
-
-
+ }

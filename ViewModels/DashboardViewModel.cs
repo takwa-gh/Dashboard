@@ -5,12 +5,12 @@ namespace Dashboard.ViewModels
     public class DashboardViewModel
     {
         // Données générales
-        public List<Station> Stations { get; set; }
+        public List<Station> Stations { get; set; } 
 
         // KPI 1 : AWT vs GUM
         public double TotalGum { get; set; }
         public double TotalAwt { get; set; }
-        public double PourcentageAWTvsGUM { get; set; } //(TotalAwt / TotalGum) * 100
+        public double pourcentageAWTvsGUM { get; set; } //(TotalAwt / TotalGum) * 100
        
         
 
@@ -32,7 +32,8 @@ namespace Dashboard.ViewModels
         // Paramètres saisis manuellement ou enregistrés par un manager
 
         public DashboardParamViewModel DashboardParams { get; set; }
-        
+
+        public List<KpiAlertViewModel> KpiAlerts { get; set; } = new List<KpiAlertViewModel>();
 
 
 

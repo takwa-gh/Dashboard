@@ -1,6 +1,6 @@
 ﻿body {
     font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-    background-color: white; /* Remplacement de var(--bg-color) */
+    background-color:snow; /* Remplacement de var(--bg-color) */
     margin: 0;
     padding: 0;
     color: #333; /* Remplacement de var(--text-color) */
@@ -8,66 +8,43 @@
 }
 
 .sidebar {
-    position: fixed; /* Correction: remplace 'center' */
+    position: fixed;
     top: 0;
     left: 0;
-    height: 80%;
-    width: 80px;
-   
-    padding-top: 340px;
+    height: 100%;
+    width: 140px; /* Option : légèrement plus large pour le texte */
+    
+    padding-top: 340px; /* à ajuster selon votre header */
     z-index: 1000;
-    /* Suppression de display:flex inutile ici */
 }
 
     .sidebar a {
-        color: black; /* Couleur plus claire que blanc pur */
-        padding:20px;
-        display: block;
-        text-decoration: none;
-        position: center;
+        color: black;
+        text-decoration: none; 
+        display: flex; 
+        align-items: center; 
+        padding: 20px 20px;
+        gap: 10px; 
+        font-weight: 500;
     }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 0, 0, 0.05);
+            color: red;
+        }
+
+
 
 .main-content {
-    margin-left: 160px;
-    margin-top: 190px;
+    background-color:snow;
+    margin-left: 150px;
+    margin-top: 100px;
     padding: 10px; /* Ajout pour éviter le collage du contenu */
 }
-
-.topbar {
-    position: fixed;
-    top: 0px;
-    left: 250px;
-    right: 0px;
-    margin: 0 auto;
-    width: calc(100% - 250px - 160px);
-    text-align: center;
-    z-index: 999;
-    padding: 10px 20px;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Ajout d'une ombre */
-}
-
 .dropdown-menu {
     right: auto;
-    left:0;
+    left: 0;
 }
-
-.logo-container {
-    position: fixed;
-    text-align:center;
-    top: 10px;
-    left: 20px;
-    z-index: 1001;
-    width: 120px;
-    height: auto;
-}
-
-    .logo-container img {
-        max-height: 30px;
-        width: auto;
-        display: block;
-    }
 
 .gauge-label {
     text-align: center;
@@ -81,9 +58,11 @@ card {
     justify-content: center;
     align-items: center;
 }
+
 .card-body {
     padding: 3px;
-    height:auto;
+    height: auto;
+    background-color: snow;
 }
 
 .gauge-canvas {
@@ -92,4 +71,25 @@ card {
     max-width: 200px;
     display: block;
     margin: 0 auto;
+}
+
+.fixed-top {
+    background-color:#E7E7E7;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius : 2px;
+}
+
+h3 {
+    font-size:30px;
+}
+
+@media (max-width: 768px) {
+    .fixed-top h3 {
+        font-size: 1rem;
+    }
+
+    .fixed-top .col-md-4 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 }

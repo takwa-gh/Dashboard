@@ -12,10 +12,12 @@ namespace Dashboard.Controllers
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
+        private readonly IKpiEvaluationService _kpiEvaluationService;
 
-        public DashboardController(IDashboardService dashboardService)
+        public DashboardController(IDashboardService dashboardService, IKpiEvaluationService kpiEvaluationService)
         {
             _dashboardService = dashboardService;
+            _kpiEvaluationService = kpiEvaluationService;
         }
 
         public IActionResult DashboardHeader()
@@ -28,13 +30,19 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await _dashboardService.GetDashboardDataAsync();
+
+            model.KpiAlerts = _kpiEvaluationService.EvaluateKpis(model);
+
             if (!model.HasData)
             {
                 ViewBag.Message = "Aucune station disponible.";
             }
-            return View(model);
+
+            return View(model); // retourne la vue Razor avec les données
         }
-       
+
+
+
 
     }
 }

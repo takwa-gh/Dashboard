@@ -16,5 +16,7 @@ namespace Dashboard.ViewModels
         [Required]
         [Display(Name = "Control Number")]
         public string? ControlNumber { get; set; }
+
+       
     }
 }

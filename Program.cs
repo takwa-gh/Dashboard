@@ -38,6 +38,9 @@ builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IDashboardParamService, DashboardParamService>();
 
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IKpiEvaluationService, KpiEvaluationService>();
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();  
+
 
 
 
