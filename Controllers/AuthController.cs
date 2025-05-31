@@ -38,15 +38,18 @@ namespace Dashboard.Controllers
 
              if (isLoginSuccessful)
              {
-                await _activityLogService.LogAsync(model.Email, "Successful connexion");
+                await _activityLogService.LogAsync(model.UserName, "Successful connection");
 
+                
                 return RedirectToAction("Index", "Dashboard");
-             }
+                
+            }
 
             // Connexion échouée
-            await _activityLogService.LogAsync(model.Email, "Connexion Failed");
+            await _activityLogService.LogAsync(model.UserName, "Connexion Failed");
 
-            ModelState.AddModelError("", "Invalid email or password.");
+             TempData["ErrorMessage"] = "Invalid email or password.";
+           
              return View(model);
          }
 
@@ -55,7 +58,9 @@ namespace Dashboard.Controllers
          
              await _authService.Logout(HttpContext);
              await _activityLogService.LogAsync(User.Identity?.Name, "Log out");
-            
+            // Logout
+
+           
             return RedirectToAction("Login");
          }
 
@@ -69,7 +74,7 @@ namespace Dashboard.Controllers
 
              if (model.Password != model.ConfirmPassword)
              {
-                 ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                 ViewBag.ErrorMessage = "Passwords do not match.";
                  return View(model);
              }
 
@@ -77,13 +82,14 @@ namespace Dashboard.Controllers
 
              if (isSignedUp)
              {
-                await _activityLogService.LogAsync(User.Identity?.Name, "Successful SignUp");
+                
+                TempData["successMessage"]= "Sign up successful .You can now log in.";
 
 
                 return RedirectToAction("Login");
              }
 
-             ModelState.AddModelError("", "Email already exists.");
+            ModelState.AddModelError("Email", "Email already exists.");
              return View(model);
          }
 
@@ -105,16 +111,39 @@ namespace Dashboard.Controllers
 
              if (!result)
              {
-                 ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
-                 return View(model);
+                ModelState.AddModelError("CurrentPassword","Current password is incorrect");
+                return View(model);
              }
 
             await _activityLogService.LogAsync(User.Identity?.Name, "Password change");
 
 
-            ViewBag.Message = "Password updated successfully.";
-             return View();
+            TempData["SuccessMessage"] = "Password have been updated successfully.";
+            return RedirectToAction("Index", "Dashboard");
          }
-     }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View(); 
+        }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            var profile = await _authService.GetUserProfileAsync(userId);
+            return View(profile);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            var userId = int.Parse(User.FindFirst("UserId").Value);
+            if (!ModelState.IsValid) return View("Profile", model);
+
+            await _authService.UpdateUserProfileAsync(userId, model);
+            return RedirectToAction("Index","Dashboard");
+        }
+
+    }
 
  }

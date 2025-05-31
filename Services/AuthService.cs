@@ -20,7 +20,7 @@ namespace Dashboard.Services
 
         public async Task<bool> Login(LoginViewModel model, HttpContext httpContext)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName);
             if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
                 return false;
 
@@ -65,13 +65,42 @@ namespace Dashboard.Services
         public async Task<bool> ChangePassword(int userId, string currentPassword, string newPassword)
         {
             var user = await _context.Users.FindAsync(userId);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
                 return false;
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<UserProfileViewModel> GetUserProfileAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return null;
+
+            return new UserProfileViewModel
+            {
+                UserId=user.UserId,
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = user.Role,
+                CreatedAt = user.CreatedAt,
+
+               
+            };
+        }
+
+        public async Task<bool> UpdateUserProfileAsync(int userId, UserProfileViewModel model)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
 
     }
 

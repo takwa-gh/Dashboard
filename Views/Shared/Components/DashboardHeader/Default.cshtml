@@ -30,21 +30,14 @@
         
 
         <!-- Section basse : Profil -->
-        <div class="dropdown align-self-end mt-auto">
-            <a class="btn btn-outline-secondary dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                <li><span class="dropdown-item-text">UserName: @User.Identity?.Name</span></li>
-                <li><span class="dropdown-item-text">Email : @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</span></li>
-                <li><span class="dropdown-item-text">Role : @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</span></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Auth")">Change password</a></li>
-                <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Logout</a></li>
-            </ul>
-        </div>
-        </div>
+            <div class="align-self-end mt-auto">
+                <a class="btn btn-outline-secondary" href="@Url.Action("Profile", "Auth")" title="profil">
+                    <i class="fas fa-user"></i>
+                </a>
+
+            </div>
     </div>
+</div>
 </div>
         
     

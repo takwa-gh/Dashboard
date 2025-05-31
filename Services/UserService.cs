@@ -37,8 +37,13 @@ namespace Dashboard.Services
                     Role = u.Role
                 }).FirstOrDefaultAsync();
         }
-        public async Task CreateAsync(CreateUserViewModel model)
+        public async Task<bool> CreateAsync(CreateUserViewModel model)
         {
+            var emailExists= await _context.Users.AnyAsync(u => u.Email.ToLower() == model.Email.ToLower());
+            if (emailExists)
+            {
+                return false;
+            }
             var user = new User
             {
                 UserName = model.UserName,
@@ -49,6 +54,8 @@ namespace Dashboard.Services
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<EditUserViewModel?> GetEditByIdAsync(int id)

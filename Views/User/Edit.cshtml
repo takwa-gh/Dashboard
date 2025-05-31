@@ -2,10 +2,9 @@
 @{
     ViewData["Title"] = "Edit User";
     <link rel="stylesheet" href="~/css/gestion.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
    
 }
-
 <!-- Card pour l'édition de l'utilisateur -->
 <div class="card p-4 shadow-sm">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -25,14 +24,20 @@
                 <label for="Email" class="form-label">Email</label>
                 <input asp-for="Email" class="form-control" id="Email" type="email" required />
             </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">Password</label>
+                <input asp-for="NewPassword" class="form-control" id="Password" type="password" />
+            </div>
+
 
             <div class="mb-3">
                 <label for="Role" class="form-label">Role</label>
                 <select asp-for="Role" class="form-control" id="Role" required>
                     <option value="Admin" >Admin</option>
-                    <option value="Manager">Manager</option>
+                    <option value="TeamLeader">TeamLeader</option>
                 </select>
             </div>
+
 
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-danger">
@@ -46,6 +51,7 @@
     </div>
 </div>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}

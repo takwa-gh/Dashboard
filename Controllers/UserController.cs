@@ -40,8 +40,9 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> CreateUser(CreateUserViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-
+            
             await _userService.CreateAsync(model);
+
             await _activityLogService.LogAsync(User.Identity?.Name, $"Create user : {model.UserName}");
             return RedirectToAction("Users");
         }

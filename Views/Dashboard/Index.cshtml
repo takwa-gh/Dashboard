@@ -145,16 +145,13 @@
         }
         else
         {
-            <div class="alert alert-warning mt-4">
-                Aucune donnée disponible pour le moment. Veuillez ajouter des stations ou configurer les paramètres.
+            <div class="alert alert-warning text-center mt-4">
+                No data available at the moment, please add stations.
             </div>
         }
     </div>
     
 </section>
-@section Scripts {
-    <script src="~/lib/gauge/gauge.min.js"></script>
-    <script src="~/lib/chart.js/dist/chart.min.js"></script>
 
     <script>
         const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
@@ -185,8 +182,11 @@
  
        </script>
 
-    <script src="~/js/dashboard.js"></script>
-
-   
+  
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
 }
+   
+
+

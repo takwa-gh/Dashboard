@@ -7,7 +7,7 @@ namespace Dashboard.Services
     {
         Task<IEnumerable<UserViewModel>> GetAllAsync();
         Task<UserViewModel?> GetByIdAsync(int id);
-        Task CreateAsync(CreateUserViewModel model);
+        Task<bool> CreateAsync(CreateUserViewModel model);
         Task<EditUserViewModel?> GetEditByIdAsync(int id);
         Task UpdateAsync(EditUserViewModel model);
         Task DeleteAsync(int id);

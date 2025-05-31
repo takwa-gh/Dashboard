@@ -5,10 +5,10 @@
 @{
     ViewData["Title"] = "Create New User";
     <link rel="stylesheet" href="~/css/gestion.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+   
 }
 
-<!-- Card pour la création de l'utilisateur -->
+
 <div class="card p-4 shadow-sm ">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Create a New User</h2>
@@ -32,7 +32,7 @@
                 <label for="role" class="form-label">Role</label>
                 <select asp-for="Role" class="form-control" id="role" required>
                     <option value="Admin">Admin</option>
-                    <option value="Manager">Manager</option>
+                    <option value="TeamLeader">TeamLeader</option>
                 </select>
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
@@ -54,3 +54,7 @@
         </form>
     </div>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}

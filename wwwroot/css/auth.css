@@ -1,5 +1,5 @@
 ﻿/* Variables pour les couleurs et l'espacement */
-:root {
+:root{
     --primary-color: #e30613; /* Rouge Yazaki */
     --primary-hover: #c00510;
     --secondary-color: #000000; /* Noir Yazaki */
@@ -14,13 +14,15 @@
     --input-height: 50px;
     --border-radius: 8px;
     --spacing: 24px;
+
 }
 
 /* Styles généraux */
 body {
     font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-    background-color:snow;
-    margin: 0;
+   
+    position:relative;
+    margin-top: 0;
     padding: 0;
     color: var(--text-color);
     line-height: 1.6;
@@ -28,18 +30,19 @@ body {
 
 /* Logo Yazaki */
 .logo-container {
-    position: absolute;
-    top: 20px;
+    position:fixed;
+    top: 30px;
     left: 20px;
     z-index: 100;
     width: auto;
     height: auto;
+    max-width: 100%;
 }
 
     .logo-container img {
-        max-height: 40px;
-        width: auto;
-        display:block;
+        max-width: 250px;
+        height: auto;
+        display: block;
     }
 
 /* Container d'authentification */
@@ -49,6 +52,7 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    margin :0 auto;
     background-color: var(--white);
     background-image: linear-gradient(135deg, rgba(227, 6, 19, 0.05) 0%, rgba(0, 0, 0, 0.05) 100%);
     position: relative;
@@ -65,9 +69,18 @@ body {
     border-top: 4px solid var(--primary-color);
     margin-top: 30px; /* Espace pour que le formulaire ne soit pas trop près du logo */
 }
+.alert-zone {
+    margin-bottom: 450px;
+    position:fixed;
+    overflow :visible;
 
+}
+.auto-dismiss {
+    cursor: pointer;
+}
     /* Titre du formulaire */
     .auth-form::before {
+        content: "GET STARTED !";
         display: block;
         font-size: 24px;
         font-weight: 600;
@@ -107,12 +120,13 @@ body {
 
 /* Icônes */
 .fas {
-    position:absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: fixed;
+    left: 15px;
+    top: 10%;
+    transform: translateY(50%);
     color: var(--secondary-color);
-    font-size: 16px;
+    font-size: 17px;
+    z-index:2;
 }
 
 /* Messages d'erreur */
@@ -210,7 +224,7 @@ body {
 }
 
 /* Responsive design */
-@media (max-width: 480px) {
+/*@media (max-width: 480px) {
     .auth-form {
         padding: 20px;
     }
@@ -224,7 +238,7 @@ body {
         top: auto;
         left: auto;
         text-align: left;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         padding-left: 20px;
     }
 
@@ -232,3 +246,4 @@ body {
             max-height: 30px;
         }
 }
+*/

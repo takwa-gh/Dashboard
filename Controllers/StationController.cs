@@ -28,7 +28,7 @@ namespace Dashboard.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            if (User.IsInRole("Manager"))
+            if (User.IsInRole("TeamLeader"))
             {
                 var stations = await _stationService.GetStationsForManagerAsync(userId);
                 return View(stations);

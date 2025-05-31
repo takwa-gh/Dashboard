@@ -2,9 +2,10 @@
     background-color: snow;
     border-radius: 1rem;
     box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-    padding: 1px;
+    padding: 2px;
     margin-right: 50px;
-    margin-top : 75px;
+    margin-left: 50px;
+    margin-top : 50px;
     height:550px;
 
 }
@@ -25,8 +26,8 @@
 
 input.form-control {
     border-radius: 0.6rem;
-    
-   
+    background-color:snow
+ 
 }
 
 .table td, .table th {

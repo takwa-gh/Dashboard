@@ -35,7 +35,7 @@ namespace Dashboard.Controllers
 
             if (!model.HasData)
             {
-                ViewBag.Message = "Aucune station disponible.";
+                ViewBag.ErrorMessage = "No station available.";
             }
 
             return View(model); // retourne la vue Razor avec les données

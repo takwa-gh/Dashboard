@@ -18,7 +18,6 @@ namespace Dashboard.Data
         //DbSet for Lines
         public DbSet<DashboardParam> DashboardParams { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
-
     }
 
 }

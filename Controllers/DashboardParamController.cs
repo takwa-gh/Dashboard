@@ -28,9 +28,11 @@ namespace Dashboard.Controllers
         public async Task<IActionResult> EditParams(DashboardParamViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.ErrorMessage = "Please fill in all required fields.";
                 return View(model);
-
-            var userName = User.Identity?.Name ?? "Unknown";
+            }
+            var userName = User.Identity?.Name;
 
             if (User.IsInRole("Admin"))
             {
@@ -49,7 +51,7 @@ namespace Dashboard.Controllers
                 if (oldValues.ControlNumber != model.DashboardHeader.ControlNumber)
                     await _activityLogService.LogAsync(userName, $"Changed Control Number: '{oldValues.ControlNumber}' → '{model.DashboardHeader.ControlNumber}'");
             }
-            else if (User.IsInRole("Manager"))
+            else if (User.IsInRole("TeamLeader"))
             {
                 var oldValues = await _service.GetDashboardInfoAsync();
                 await _service.UpdateDashboardInfoAsync(model.DashboardInfo);

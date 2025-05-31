@@ -4,12 +4,20 @@
 @{
     ViewData["Title"] = "Sign Up";
     Layout = "_AuthLayout";
-    <link rel="stylesheet" href="~/css/adminlte.min.css" />
-    <link rel="stylesheet" href="~/css/auth.css" />
-}  
-      <div class="auth-container">
+    
+} 
+
+
+     <div class="auth-container">
+
+    @section Alerts {
+        <div class="alert-zone auto-dismiss">
+            @Html.Partial("_Alerts")
+        </div>
+    }
           <div class="auth-form">
             <form asp-action="SignUp" method="post">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
                 <input asp-for="UserName" class="form-control" placeholder="UserName">
                 <span class="fas fa-user"></span>
@@ -40,3 +48,29 @@
             </form>
         </div>
     </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Version pure JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.auto-dismiss').forEach(function(alert) {
+                let timer = setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+
+                alert.addEventListener('mouseenter', () => clearTimeout(timer));
+                alert.addEventListener('mouseleave', () => {
+                    timer = setTimeout(() => {
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }, 5000);
+                });
+            });
+        });
+    </script>
+    
+}
