@@ -41,7 +41,7 @@ namespace Dashboard.Controllers
                 await _activityLogService.LogAsync(model.UserName, "Successful connection");
 
                 
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Home");
                 
             }
 
@@ -119,7 +119,7 @@ namespace Dashboard.Controllers
 
 
             TempData["SuccessMessage"] = "Password have been updated successfully.";
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Index", "Home");
          }
 
         [HttpGet]
@@ -141,7 +141,7 @@ namespace Dashboard.Controllers
             if (!ModelState.IsValid) return View("Profile", model);
 
             await _authService.UpdateUserProfileAsync(userId, model);
-            return RedirectToAction("Index","Dashboard");
+            return RedirectToAction("Index","Home");
         }
 
     }

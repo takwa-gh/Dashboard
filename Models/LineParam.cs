@@ -2,7 +2,7 @@
 
 namespace Dashboard.Models
 {
-    public class DashboardParam
+    public class LineParam
     {
         public int Id { get; set; }
         public string? Plant { get; set; }

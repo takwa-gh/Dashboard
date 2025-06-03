@@ -35,7 +35,7 @@ builder.Services.AddSession();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStationService, StationService>();
-builder.Services.AddScoped<IDashboardParamService, DashboardParamService>();
+builder.Services.AddScoped<ILineParamsService, LineParamsService>();
 
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IKpiEvaluationService, KpiEvaluationService>();

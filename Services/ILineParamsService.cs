@@ -2,7 +2,7 @@
 
 namespace Dashboard.Services
 {
-    public interface IDashboardParamService
+    public interface ILineParamsService
     {
         Task<DashboardParamViewModel?> GetDashboardParamsAsync();
         Task<DashboardHeaderViewModel> GetDashboardHeaderAsync();

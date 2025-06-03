@@ -1,57 +1,96 @@
-﻿@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor HttpContextAccessor
-@using Dashboard.Controllers
-@using System.Security.Claims
-@using Dashboard.ViewModels
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>@ViewData["Title"]</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="~/css/dashboard.css" />
 </head>
 <body>
+    <header class=" shadow-sm py-2">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <!-- Logo Yazaki -->
+            <div>
+                <img src="~/images/yazaki.png" alt="Yazaki Logo" style="height: 30px;" />
+                <p style="margin: 0; font-size: 14px; font-style: italic;  text-align:center;">
+                    One for all, all for one
+                </p>
+            </div>
 
-    <div id="dashboard-header" >
-    @await Component.InvokeAsync("DashboardHeader")
+            <!-- Navigation centrée -->
+            <nav class="mx-auto">
+                <ul class="nav justify-content-center">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home"></i> Home
+                            </a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Station" asp-action="Stations">
+                                <i class="fas fa-desktop"></i> Stations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="LineParams" asp-action="EditParams">
+                                <i class="fas fa-sliders-h"></i> LineParameters
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Dashboard" asp-action="Index">
+                                <i class="fas fa-chart-line"></i> Dashboard
+                            </a>
+                        </li>
+                    
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="User" asp-action="Users">
+                                <i class="fas fa-user"></i> Users
+                            </a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="ActivityLog" asp-action="Index">
+                            <i class="fas fa-clipboard-list"></i> Logs
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="d-flex align-items-center ms-auto me-4">
+                <!-- Notification Icon -->
+                <a href="/Notifications" class="text-dark me-3 position-relative" title="Notifications">
+                    <i class="fas fa-bell fa-lg"></i>
+                    <!-- Badge (si alertes) -->
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </a>
+
+                <!-- Profile Icon -->
+                <a asp-controller="Auth" asp-action="Profile" class="text-dark" title="Profile">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-4">
+        @RenderBody()
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar d-flex flex-column">
-        <a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home"></i> Home</a>
-        <a asp-controller="Station" asp-action="stations"><i class="fas fa-desktop"></i> Stations</a>
-        <a asp-controller="DashboardParam" asp-action="EditParams"><i class="fas fa-cogs"></i> Dashboard Parameters</a>
-        
-        @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin"))
-        {
-            <a asp-controller="User" asp-action="Users"><i class="fas fa-users"></i> Users</a>
-            <a asp-controller="ActivityLog" asp-action="Index"><i class="fas fa-history"></i> Activities </a>
-        }
-    </div>
-
-    <!-- Body (main content) -->
-    <div class="main-content">
-        <main role="main" class="pt-3">
-            
-            @RenderBody()
-            
-
-        </main>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/adminlte.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
-
-    <script src="~/lib/gauge/gauge.min.js"></script>
-    <script src="~/lib/chart.js/dist/chart.min.js"></script>
-    <script src="~/js/dashboard.js"></script>
-   
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
 

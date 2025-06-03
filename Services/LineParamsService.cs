@@ -8,18 +8,18 @@ using System.Diagnostics.Eventing.Reader;
 
 namespace Dashboard.Services
 {
-    public class DashboardParamService : IDashboardParamService
+    public class LineParamsService : ILineParamsService
     {
         private readonly AppDbContext _context;
 
-        public DashboardParamService(AppDbContext context)
+        public LineParamsService(AppDbContext context)
         {
             _context = context;
         }
 
         public async Task<DashboardParamViewModel> GetDashboardParamsAsync()
         {
-            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            var param = await _context.LineParams.FirstOrDefaultAsync();
             if (param == null) return new DashboardParamViewModel
             {
                 DashboardHeader = new DashboardHeaderViewModel(),
@@ -49,7 +49,7 @@ namespace Dashboard.Services
         }
         public async Task<DashboardHeaderViewModel> GetDashboardHeaderAsync()
         {
-            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            var param = await _context.LineParams.FirstOrDefaultAsync();
             if (param == null) return new DashboardHeaderViewModel();
 
             return new DashboardHeaderViewModel
@@ -63,7 +63,7 @@ namespace Dashboard.Services
 
         public async Task<DashboardInfoViewModel> GetDashboardInfoAsync()
         {
-            var param = await _context.DashboardParams.FirstOrDefaultAsync();
+            var param = await _context.LineParams.FirstOrDefaultAsync();
             if (param == null) return new DashboardInfoViewModel();
 
             return new DashboardInfoViewModel
@@ -79,7 +79,7 @@ namespace Dashboard.Services
 
         public async Task UpdateDashboardInfoAsync(DashboardInfoViewModel model)
         {
-            var param = _context.DashboardParams.FirstOrDefault();
+            var param = _context.LineParams.FirstOrDefault();
 
             if (param != null)
             {
@@ -94,7 +94,7 @@ namespace Dashboard.Services
         }
         public async Task UpdateDashboardHeaderAsync(DashboardHeaderViewModel model)
         {
-            var entity = await _context.DashboardParams.FirstOrDefaultAsync();
+            var entity = await _context.LineParams.FirstOrDefaultAsync();
             if (entity == null) return;
 
             entity.Plant = model.Plant;

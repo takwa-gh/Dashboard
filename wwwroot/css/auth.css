@@ -223,27 +223,3 @@ body {
     color: var(--primary-color);
 }
 
-/* Responsive design */
-/*@media (max-width: 480px) {
-    .auth-form {
-        padding: 20px;
-    }
-
-    .form-control {
-        height: 46px;
-    }
-
-    .logo-container {
-        position: relative;
-        top: auto;
-        left: auto;
-        text-align: left;
-        margin-bottom: 10px;
-        padding-left: 20px;
-    }
-
-        .logo-container img {
-            max-height: 30px;
-        }
-}
-*/

@@ -1,12 +1,12 @@
 ﻿.card {
-    background-color: snow;
+    background-color: white;
     border-radius: 1rem;
     box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     padding: 2px;
-    margin-right: 50px;
-    margin-left: 50px;
+    margin-right: 20px;
+    margin-left: 20px;
     margin-top : 50px;
-    height:550px;
+    height:600px;
 
 }
 
@@ -26,7 +26,7 @@
 
 input.form-control {
     border-radius: 0.6rem;
-    background-color:snow
+    background-color:snow ;
  
 }
 
@@ -58,5 +58,5 @@ input.form-control {
     /* Pour éviter un effet moche de bordures */
     .table-wrapper table {
         border-collapse: separate;
-        background-color:snow;
+        background-color:white;
     }

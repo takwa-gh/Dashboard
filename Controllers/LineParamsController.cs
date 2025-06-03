@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Dashboard.Controllers
 {
-    public class DashboardParamController : Controller
+    public class LineParamsController : Controller
     {
-        private readonly IDashboardParamService _service;
+        private readonly ILineParamsService _service;
         private readonly IActivityLogService _activityLogService;
 
-        public DashboardParamController(IDashboardParamService service, IActivityLogService activityLogService)
+        public LineParamsController(ILineParamsService service, IActivityLogService activityLogService)
         {
             _service = service;
             _activityLogService = activityLogService;
@@ -76,7 +76,7 @@ namespace Dashboard.Controllers
             }
 
             TempData["Success"] = "Parametres updated successfully.";
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Index", "Home");
         }
     }
             

@@ -1,0 +1,17 @@
+﻿body{
+    background-color:snow;
+}
+.nav-link {
+    color: black !important;
+    transition: color 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: red !important;
+    }
+
+.nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid red;
+    color: red !important;
+}

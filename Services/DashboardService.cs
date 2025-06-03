@@ -15,7 +15,7 @@ namespace Dashboard.Services
         }
         public DashboardHeaderViewModel GetDashboardHeader()
         {
-            var latestParams = _context.DashboardParams
+            var latestParams = _context.LineParams
                 .OrderByDescending(b => b.Id)
                 .FirstOrDefault();
             
@@ -44,7 +44,7 @@ namespace Dashboard.Services
             var stations = await _context.Stations.ToListAsync();
             
             // 2. Charger les derniers paramètres globaux
-            var latestParams = await _context.DashboardParams
+            var latestParams = await _context.LineParams
                 .OrderByDescending(b => b.Id)
                 .FirstOrDefaultAsync();
             // Normalisation
