@@ -27,7 +27,7 @@ function getStatusLabel(value, thresholds = { bad: 15, warning: 100, mode: "less
     }
 }
 // Jauge graduée avec titre + légende dynamique
-function renderGaugeWithGraduation(canvasId, value, label, options) {
+function drawGauge(canvasId, value, label, options) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
@@ -238,44 +238,51 @@ function renderBarChart() {
         }
     });
 }
+// Fonction d'initialisation des jauges
+function initGauges() {
+    if (!checkDashboardData()) return;
+
+    drawGauge('gauge1', dashboardData.manpowerAllocation, 'Manpower Allocation', {
+        min: 0,
+        max: 120,
+        ticks: ["0", "20", "40", "60", "80", "100", "120"],
+        highlights: [
+            { from: 0, to: 80, color: "#FFCC00" },
+            { from: 80, to: 110, color: "#00C853" },
+            { from: 110, to: 120, color: "#FF0000" }
+        ],
+        thresholds: { bad: 80, warning: 110, mode: "between" }
+    });
+
+   drawGauge('gauge2', dashboardData.pourcentageAWTvsGUM, 'AWT vs GUM', {
+        min: 0,
+        max: 120,
+        ticks: ["0", "20", "40", "60", "80", "100", "120"],
+        highlights: [
+            { from: 0, to: 90, color: "#FFCC00" },
+            { from: 90, to: 100, color: "#00C853" },
+            { from: 100, to: 120, color: "#FF0000" }
+        ],
+        thresholds: { bad: 90, warning: 100, mode: "between" }
+    });
+
+    drawGauge('gauge3', dashboardData.lineEffectiveness, 'Line Effectiveness', {
+        min: 0,
+        max: 50,
+        ticks: ["0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50"],
+        highlights: [
+            { from: 0, to: 15, color: "#00C853" },
+            { from: 15, to: 50, color: "#FF0000" }
+        ],
+        thresholds: { bad: 15 }
+    });
+}
+
+// Fonction d'initialisation complète au chargement initial
 document.addEventListener('DOMContentLoaded', function () {
     if (checkDashboardData()) {
-        renderGaugeWithGraduation('gauge1', dashboardData.manpowerAllocation, 'Manpower Allocation', {
-            min: 0,
-            max: 120,
-            ticks: ["0", "20", "40", "60", "80", "100", "120"],
-            highlights: [
-                { from: 0, to: 80, color: "#FFCC00" },
-                { from: 80, to: 110, color: "#00C853" },
-                { from: 110, to: 120, color: "#FF0000" }
-            ],
-            thresholds: { bad: 80, warning: 110, mode: "between" }
-        });
-
-        renderGaugeWithGraduation('gauge2', dashboardData.pourcentageAWTvsGUM, 'AWT vs GUM', {
-            min: 0,
-            max: 120,
-            ticks: ["0", "20", "40", "60", "80", "100", "120"],
-            highlights: [
-                { from: 0, to: 90, color: "#FFCC00" },
-                { from: 90, to: 100, color: "#00C853" },
-                { from: 100, to: 120, color: "#FF0000" }
-            ],
-            thresholds: { bad: 90, warning: 100, mode: "between" }
-        });
-
-        renderGaugeWithGraduation('gauge3', dashboardData.lineEffectiveness, 'Line Effectiveness', {
-            min: 0,
-            max: 50,
-            ticks: ["0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50"],
-            highlights: [
-                { from: 0, to: 15, color: "#00C853" },
-                { from: 15, to: 50, color: "#FF0000" }
-            ],
-            thresholds: { bad: 15 }
-        });
-
-        renderBarChart();
+        initGauges();        // Rendu des jauges
+        renderBarChart();    // Rendu du bar chart
     }
 });
 

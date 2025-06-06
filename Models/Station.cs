@@ -5,7 +5,6 @@ namespace Dashboard.Models
     public class Station
     {
         public int StationId { get; set; } =new int();
-        
         public required string StationName { get; set; }
         public required double GumValue { get; set; }
         public double MinGumValue { get; set; }

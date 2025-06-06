@@ -40,6 +40,21 @@ namespace Dashboard.Controllers
 
             return View(model); // retourne la vue Razor avec les données
         }
+        [HttpGet]
+        public async Task<IActionResult> LoadPartial(string partial)
+        {
+            var model = await _dashboardService.GetDashboardDataAsync();
+            model.KpiAlerts = _kpiEvaluationService.EvaluateKpis(model);
+
+            return partial switch
+            {
+                "kpigauges" => PartialView("_KpiGauges", model),
+                "barchart" => PartialView("_BarChart", model),
+                "lineevaluation" => PartialView("_LineEvaluation", model),
+                _ => Content("Invalid Section"),
+            };
+        }
+
 
 
 

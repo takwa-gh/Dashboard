@@ -52,34 +52,25 @@
                     {
                         <li class="nav-item">
                             <a class="nav-link"
-                               asp-controller="User" asp-action="Users">
+                            asp-controller="User" asp-action="Users">
                                 <i class="fas fa-user"></i> Users
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                            asp-controller="ActivityLog" asp-action="Index">
+                                <i class="fas fa-clipboard-list"></i> Logs
+                            </a>
+                        </li>
                     }
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="ActivityLog" asp-action="Index">
-                            <i class="fas fa-clipboard-list"></i> Logs
-                        </a>
-                    </li>
                 </ul>
             </nav>
 
             <div class="d-flex align-items-center ms-auto me-4">
-                <!-- Notification Icon -->
-                <a href="/Notifications" class="text-dark me-3 position-relative" title="Notifications">
-                    <i class="fas fa-bell fa-lg"></i>
-                    <!-- Badge (si alertes) -->
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
-                        <span class="visually-hidden">unread messages</span>
-                    </span>
-                </a>
-
                 <!-- Profile Icon -->
                 <a asp-controller="Auth" asp-action="Profile" class="text-dark" title="Profile">
-                    <i class="fas fa-user-circle fa-lg"></i>
+                    <i class="fas fa-user fa-2x"></i> 
                 </a>
             </div>
         </div>

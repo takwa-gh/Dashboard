@@ -31,7 +31,7 @@ namespace Dashboard.ViewModels
 
         // Paramètres saisis manuellement ou enregistrés par un manager
 
-        public DashboardParamViewModel DashboardParams { get; set; }
+        public LineParamViewModel LineParams { get; set; }
 
         public List<KpiAlertViewModel> KpiAlerts { get; set; } = new List<KpiAlertViewModel>();
 

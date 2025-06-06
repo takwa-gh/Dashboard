@@ -1,0 +1,61 @@
+﻿@using Dashboard.ViewModels
+@model DashboardViewModel
+
+<div class="col-lg-3">
+    <div class="card">
+        <div class="card-header">GUM vs AWT Line Evaluation</div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Plant</th>
+                        <td>@Model.LineParams?.DashboardHeader.Plant</td>
+                    </tr>
+                    <tr>
+                        <th>Project</th>
+                        <td>@Model.LineParams?.DashboardHeader.Project</td>
+                    </tr>
+                    <tr>
+                        <th>Family</th>
+                        <td>@Model.LineParams?.DashboardHeader.Family</td>
+                    </tr>
+                    <tr>
+                        <th>Control Number</th>
+                        <td>@Model.LineParams?.DashboardHeader.ControlNumber</td>
+                    </tr>
+                    <tr>
+                        <th>Working time</th>
+                        <td>@Model.LineParams?.DashboardInfo.WorkingTime</td>
+                    </tr>
+                    <tr>
+                        <th>Num. of Op.</th>
+                        <td>
+                            Direct: @Model.Stations.Sum(s => s.DirectOperator) <br />
+                            Indirect: @Model.Stations.Sum(s => s.IndirectOperator)
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>CS (min)</th>
+                        <td>@Model.LineParams?.DashboardInfo.ConveyorSpeed.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <th>TT (min)</th>
+                        <td>@Model.LineParams?.DashboardInfo.TactTime.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <th>Actual output</th>
+                        <td>@Model.LineParams?.DashboardInfo.ActualOutput</td>
+                    </tr>
+                    <tr>
+                        <th>GUM (min)</th>
+                        <td>@Model.TotalGum.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <th>AWT (min)</th>
+                        <td>@Model.TotalAwt.ToString("F2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

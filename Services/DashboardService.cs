@@ -63,7 +63,7 @@ namespace Dashboard.Services
             double totalGum = stations.Sum(s => s.AverageGumValue); 
             double totalAwt = stations.Sum(s => s.AverageAwtValue);
 
-            double AwtVsGum = (totalGum > 0) ? Math.Round((totalAwt/totalGum) * 100,2) : 1;
+            double AwtVsGum = (totalGum > 0) ? Math.Round((totalAwt/totalGum) * 100,2) : 0;
 
             double totalManpower = Normalize(stations.Sum(s => s.DirectOperator + s.IndirectOperator));
             double manpowerNeeded = (tactTime > 0) ? Normalize(totalAwt / tactTime) : 1;
@@ -86,7 +86,7 @@ namespace Dashboard.Services
                 ManpowerNeeded = manpowerNeeded,
                 ManpowerAllocation = manpowerAllocation,
                 LineEffectiveness = lineEffectiveness,
-                DashboardParams = new DashboardParamViewModel
+                LineParams = new LineParamViewModel
                 {
                     DashboardInfo = new DashboardInfoViewModel
                     {

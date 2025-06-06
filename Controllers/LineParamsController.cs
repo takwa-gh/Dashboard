@@ -25,7 +25,7 @@ namespace Dashboard.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditParams(DashboardParamViewModel model)
+        public async Task<IActionResult> EditParams(LineParamViewModel model)
         {
             if (!ModelState.IsValid)
             {

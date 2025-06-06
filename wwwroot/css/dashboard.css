@@ -7,14 +7,14 @@
     line-height: 1.6;
 }
 
-.sidebar {
+/*.sidebar {
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
-    width: 140px; /* Option : légèrement plus large pour le texte */
+    width: 140px;  Option : légèrement plus large pour le texte 
     
-    padding-top: 340px; /* à ajuster selon votre header */
+    padding-top: 340px; /* à ajuster selon votre header 
     z-index: 1000;
 }
 
@@ -32,11 +32,11 @@
             background-color: rgba(255, 0, 0, 0.05);
             color: red;
         }
-
+*/
 
 
 .main-content {
-    background-color:snow;
+    background-color: snow;
     margin-left: 150px;
     margin-top: 100px;
     padding: 10px; /* Ajout pour éviter le collage du contenu */
@@ -57,6 +57,7 @@ card {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 3px;
 }
 
 .card-body {
@@ -93,3 +94,27 @@ h3 {
         margin-bottom: 20px;
     }
 }
+.center-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 20vh; /* centrage vertical */
+    gap: 7px; /* espacement entre les boutons */
+}
+
+.large-button {
+    font-size: 18px; /* taille de police  */
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545;
+    transition: all 0.3s ease;
+}
+
+    .large-button:hover {
+        background-color: #dc3545;
+        color: white;
+        cursor: pointer;
+    }

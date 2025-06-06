@@ -57,91 +57,20 @@
 
         @if (Model.HasData)
         {
-            <!-- Ligne 1 : jauges -->
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="card">
-                        <div class="card-header">Manpower Allocation</div>
-                        <div class="card-body">
-                            <canvas id="gauge1" class="gauge-canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="card">
-                        <div class="card-header">AWT vs GUM</div>
-                        <div class="card-body">
-                            <canvas id="gauge2" class="gauge-canvas"></canvas>
+         <div class="center-buttons-container">
+    <button class="large-button" onclick="loadPartial('kpigauges')">Visualize Key Performance Indicators</button>
+    <button class="large-button" onclick="loadPartial('barchart')">Visualize AWT/GUM Breakdown</button>
+    <button class="large-button" onclick="loadPartial('lineevaluation')">Visualize Line Evaluation</button>
+</div>
+  
+    <div id="loadingSpinner" class="text-center" style="display:none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div id="dynamicContent">
 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="card">
-                        <div class="card-header">Line Effectiveness</div>
-                        <div class="card-body">
-                            <canvas id="gauge3" class="gauge-canvas"></canvas>
-
-                        </div>
-                    </div>
-                </div>
-               
-                <div class="col-lg-3">
-                    <div class="card">
-                        <div class="card-header">GUM vs AWT Line Evaluation</div>
-                        <div class="card-body"> 
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <th>Working time</th>
-                                        <td>@Model.DashboardParams.DashboardInfo.WorkingTime</td>
-                                    </tr>
-                                    <tr>
-                                        <th >Num. of Op.</th>
-                                        <td>
-                                              Direct: @Model.Stations.Sum(s => s.DirectOperator)
-
-                                              Indirect: @Model.Stations.Sum(s => s.IndirectOperator)
-                                        </td>
-                                       
-                                    </tr>
-                                    <tr>
-                                        <th>CS (min)</th>
-                                        <td>@Model.DashboardParams.DashboardInfo.ConveyorSpeed</td>
-                                    </tr>
-                                    <tr>
-                                        <th>TT (min)</th>
-                                        <td>@Model.DashboardParams.DashboardInfo.TactTime</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Actual output</th>
-                                        <td>@Model.DashboardParams.DashboardInfo.ActualOutput</td>
-                                    </tr>
-                                    <tr>
-                                        <th>GUM (min)</th>
-                                        <td>@Model.TotalGum.ToString("F2")</td>
-                                    </tr>
-                                    <tr>
-                                        <th>AWT (min)</th>
-                                        <td>@Model.TotalAwt.ToString("F2")</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Ligne 2: Bar Chart -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">GUM vs AWT Breakdown</div>
-                        <div class="card-body">
-                            <canvas id="barChart" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    </div>
         }
         else
         {
@@ -153,11 +82,16 @@
     
 </section>
 
-    <script>
-        const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
+    
+
+
+@section Scripts {
+<script>
+     const modelData = (@Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
         {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         })));
+     console.log("modelData:", modelData);
 
         window.dashboardData = modelData;
 
@@ -175,18 +109,51 @@
             awtMinData: modelData.stations.map(s => parseFloat(s.minAwtValue ?? 0).toFixed(2)),
 
             // Paramètres globaux
-            tactTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.tactTime),
-            conveyorSpeedData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.conveyorSpeed),
-            cycleTimeData: Array(modelData.stations.length).fill(modelData.dashboardParams.dashboardInfo.cycleTime)
+            tactTimeData: Array(modelData.stations.length).fill(modelData.lineParams.dashboardInfo.tactTime),
+            conveyorSpeedData: Array(modelData.stations.length).fill(modelData.lineParams.dashboardInfo.conveyorSpeed),
+            cycleTimeData: Array(modelData.stations.length).fill(modelData.lineParams.dashboardInfo.cycleTime)
         };
- 
-       </script>
 
-  
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
 
-}
-   
+    function loadPartial(partialName) {
+        const content = document.getElementById("dynamicContent");
+        const spinner = document.getElementById("loadingSpinner");
+
+        // Affiche le spinner
+        spinner.style.display = "block";
+        content.style.opacity = "0.5"; // Optionnel : effet de chargement
+
+        fetch(`/Dashboard/LoadPartial?partial=${partialName}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur lors du chargement du contenu.");
+                return response.text();
+            })
+            .then(html => {
+                content.innerHTML = html;
+                spinner.style.display = "none";
+                content.style.opacity = "1";
+
+                // Initialisation JS après insertion du HTML
+                if (partialName === "barchart") {
+                    renderBarChart();
+                } else if (partialName === "kpigauges") {
+                    initGauges();
+            }
+            })
+            .catch(error => {
+                spinner.style.display = "none";
+                content.innerHTML = `<div class="alert alert-danger text-center">Une erreur est survenue lors du chargement.</div>`;
+                console.error("Erreur AJAX :", error);
+            })
+    }
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-gauges/gauge.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="~/js/Dashboard.js"></script>
+  <partial name="_ValidationScriptsPartial" />
+  }
+
 
 

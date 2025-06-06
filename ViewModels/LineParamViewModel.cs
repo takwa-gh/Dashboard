@@ -2,7 +2,7 @@
 
 namespace Dashboard.ViewModels
 {
-    public class DashboardParamViewModel
+    public class LineParamViewModel
     {
         public DashboardHeaderViewModel DashboardHeader { get; set; } 
         public DashboardInfoViewModel DashboardInfo { get; set; }

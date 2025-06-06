@@ -41,16 +41,25 @@ input.form-control {
     position: relative;
 
 }
-.table-wrapper thead {
-    position:sticky;
-}
+    .table-wrapper thead tr:nth-child(1) th {
+        position: sticky;
+        top: 0;
+        background-color: #fceaea;
+        z-index: 3;
+    }
+    .table-wrapper thead tr:nth-child(2) th {
+        position: sticky;
+        top: 43px; /* Hauteur approximative de la première ligne de <thead> */
+        background-color: #fceaea;
+        z-index: 2;
+    }
 
     /* Fixer l'en-tête du tableau */
     .table-wrapper thead th {
         position: sticky;
         top: 0;
         background-color: #fceaea; /* même couleur que ta card/table */
-        z-index: 5;
+        z-index: 2;
         box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* petite ombre légère */
         padding: 10px;
     }
