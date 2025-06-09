@@ -7,6 +7,7 @@ namespace Dashboard.Models
         public int StationId { get; set; } =new int();
         public required string StationName { get; set; }
         public required double GumValue { get; set; }
+
         public double MinGumValue { get; set; }
         public  double MaxGumValue { get; set; }
         public double AverageGumValue { get; set; }

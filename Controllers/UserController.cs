@@ -39,9 +39,15 @@ namespace Dashboard.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-            
-            await _userService.CreateAsync(model);
+            if (!ModelState.IsValid) return View("Create",model);
+
+            var result = await _userService.CreateAsync(model);
+
+            if (!result)
+            {
+                ModelState.AddModelError("Email", "A user with this email already exists.");
+                return View("Create",model); // Retourne la vue avec l’erreur affichée
+            }
 
             await _activityLogService.LogAsync(User.Identity?.Name, $"Create user : {model.UserName}");
             return RedirectToAction("Users");

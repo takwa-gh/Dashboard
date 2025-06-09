@@ -14,6 +14,13 @@
 
         @if (HttpContextAccessor.HttpContext.User.IsInRole("Admin") && Model.KpiAlerts?.Any() == true)
         {
+           <div class="d-flex justify-content-end align-items-center gap-3 pe-4 pt-2">
+
+        <!-- Bouton Export -->
+           <button class="btn btn-outline-dark" onclick="exportDashboardToPdf()">
+            <i class="fas fa-download me-1"></i> Export
+           </button>
+
             <div class="d-flex justify-content-end pe-4 pt-2">
                 <div class="dropdown">
                     <button class="btn bg-transparent border-0 position-relative" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -23,7 +30,7 @@
                         </span>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end p-2 shadow-lg" aria-labelledby="dropdownMenuButton" style="min-width: 300px; max-height: 350px; overflow-y: auto;">
+                    <ul class="dropdown-menu dropdown-menu-end p-3 shadow-lg" aria-labelledby="dropdownMenuButton" style= "height:auto; overflow-y:auto;">
                         @foreach (var alert in Model.KpiAlerts)
                         {
                             string bgColor = alert.Severity == AlertLevel.Warning
@@ -53,14 +60,15 @@
                     </ul>
                 </div>
             </div>
+            </div>
         }
 
         @if (Model.HasData)
         {
          <div class="center-buttons-container">
-    <button class="large-button" onclick="loadPartial('kpigauges')">Visualize Key Performance Indicators</button>
-    <button class="large-button" onclick="loadPartial('barchart')">Visualize AWT/GUM Breakdown</button>
-    <button class="large-button" onclick="loadPartial('lineevaluation')">Visualize Line Evaluation</button>
+    <button class="large-button" onclick="loadPartial('kpigauges')">Key Performance Indicators</button>
+    <button class="large-button" onclick="loadPartial('barchart')">AWT/GUM Breakdown</button>
+    <button class="large-button" onclick="loadPartial('lineevaluation')">Line Evaluation</button>
 </div>
   
     <div id="loadingSpinner" class="text-center" style="display:none;">
@@ -71,6 +79,17 @@
     <div id="dynamicContent">
 
     </div>
+    //contenu a exporter 
+    <div id="exportContainer" class="export-container">
+        <div>
+        <img id="yazakiLogo" src="/images/yazaki.png" alt="Yazaki Logo" style="max-height: 30px;"/>
+    </div>
+
+    <div class="mt-4" id="gaugesExportSection"></div>
+    <div class="mt-4" id="barchartExportSection" ></div>
+    <div class="mt-4" id="lineEvaluationExportSection"></div>
+</div>
+
         }
         else
         {
@@ -146,14 +165,104 @@
                 console.error("Erreur AJAX :", error);
             })
     }
+    async function loadAllExportSections() {
+    const gaugesHtml = await fetch('/Dashboard/LoadPartial?partial=kpigauges').then(r => r.text());
+    const barchartHtml = await fetch('/Dashboard/LoadPartial?partial=barchart').then(r => r.text());
+    const lineEvalHtml = await fetch('/Dashboard/LoadPartial?partial=lineevaluation').then(r => r.text());
+
+    document.getElementById('gaugesExportSection').innerHTML = gaugesHtml;
+    document.getElementById('barchartExportSection').innerHTML = barchartHtml;
+    document.getElementById('lineEvaluationExportSection').innerHTML = lineEvalHtml;
+
+    // Initialisation nécessaire des composants JS dans les blocs nouvellement injectés
+    renderBarChart();
+    initGauges();
+}
+async function exportDashboardToPdf() {
+    await loadAllExportSections(); // Charger les 3 blocs
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Pause
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('portrait', 'mm', 'a3');
+
+    const exportDiv = document.getElementById('exportContainer');
+    const logo = document.getElementById('yazakiLogo');
+
+    // Afficher temporairement le contenu à exporter
+    exportDiv.classList.remove('export-container');
+
+    // Charger le logo Yazaki
+    const logoLoaded = new Promise((resolve, reject) => {
+        if (logo.complete) {
+            resolve();
+        } else {
+            logo.onload = resolve;
+            logo.onerror = reject;
+        }
+    });
+    await logoLoaded;
+
+    // Convertir le contenu HTML en image
+    await html2canvas(exportDiv, {
+        scale: 2,
+        useCORS: true
+    }).then(async canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgProps = doc.getImageProperties(imgData);
+
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        // Date d’exportation
+        const exportDate = new Date();
+        const formattedDate = exportDate.toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Logo Yazaki (convertir en base64)
+        const logoCanvas = document.createElement('canvas');
+        logoCanvas.width = logo.naturalWidth;
+        logoCanvas.height = logo.naturalHeight;
+        logoCanvas.getContext('2d').drawImage(logo, 0, 0);
+        const logoDataUrl = logoCanvas.toDataURL('image/png');
+
+        // Ajouter la date en haut à gauche
+        doc.setFontSize(12);
+        doc.text(`Exporté le : ${formattedDate}`, 10, 10);
+
+        // Ajouter le logo en haut à droite
+        const logoWidth = 40; // en mm
+        const logoHeight = 15;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        doc.addImage(logoDataUrl, 'PNG', pageWidth - logoWidth - 10, 5, logoWidth, logoHeight);
+
+        // Ajouter le contenu principal (section exportée)
+        doc.addImage(imgData, 'PNG', 0, 25, pdfWidth, pdfHeight); // 25 mm sous le haut
+
+        // Enregistrer le PDF
+        doc.save("GUM_vs_AWT_dashboard.pdf");
+
+        // Cacher de nouveau le bloc HTML d’export
+        exportDiv.classList.add('export-container');
+    }).catch(err => {
+        console.error("Erreur de génération PDF :", err);
+        exportDiv.classList.add('export-container');
+    });
+}
+
     </script>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-gauges/gauge.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script src="~/js/Dashboard.js"></script>
   <partial name="_ValidationScriptsPartial" />
   }
-
 
 
